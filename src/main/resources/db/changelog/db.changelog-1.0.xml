@@ -6,10 +6,10 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="authorName" id="changelog-1.0">
         <createTable tableName="role">
-            <column name="role_id" type="int" autoIncrement="true">
+            <column name="id" type="character varying (36)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="role_name" type="character varying (50)">
+            <column name="role_name" type="character varying (300)">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="TIMESTAMP">
@@ -21,20 +21,20 @@
         </createTable>
 
         <createTable tableName="user">
-            <column name="user_id" type="int" autoIncrement="true">
+            <column name="id" type="character varying (36)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="email" type="character varying (50)">
+            <column name="login" type="character varying (300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="password" type="character varying (50)">
+            <column name="password" type="character varying (300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_name" type="character varying (50)">
+            <column name="user_name" type="character varying (300)">
                 <constraints nullable="false"/>
             </column>
-            <column name="role_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_user_role" references="role(role_id)"/>
+            <column name="role_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_user_role" references="role(id)"/>
             </column>
             <column name="is_active" type="BOOLEAN"/>
             <column name="created" type="TIMESTAMP">
@@ -46,7 +46,7 @@
         </createTable>
 
         <createTable tableName="thread">
-            <column name="thread_id" type="int" autoIncrement="true">
+            <column name="id" type="character varying (36)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="topic" type="character varying (100)">
@@ -61,7 +61,7 @@
         </createTable>
 
         <createTable tableName="tweet">
-            <column name="tweet_id" type="int" autoIncrement="true">
+            <column name="id" type="character varying (36)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="content" type="character varying (200)">
@@ -70,11 +70,14 @@
             <column name="likes" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_twit_user" references="user(user_id)"/>
+            <column name="user_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_tweet_user" references="user(id)"/>
             </column>
-            <column name="thread_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_twit_thread" references="thread(thread_id)"/>
+            <column name="thread_id" type="character varying (36)">
+                <constraints foreignKeyName="fk_tweet_thread" references="thread(id)"/>
+            </column>
+            <column name="reposted_tweet_id" type="character varying (36)">
+                <constraints foreignKeyName="fk_tweet_tweet" references="tweet(id)"/>
             </column>
             <column name="created" type="TIMESTAMP">
                 <constraints nullable="false"/>
@@ -84,15 +87,15 @@
             </column>
         </createTable>
 
-        <createTable tableName="author_subscriber">
-            <column name="author_subscriber_id" type="int" autoIncrement="true">
+        <createTable tableName="user_subscriber">
+            <column name="user_subscriber_id" type="character varying (36)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="author_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_author_user" references="user(user_id)"/>
+            <column name="user_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_user_user" references="user(id)"/>
             </column>
-            <column name="subscriber_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_subscriber_user" references="user(user_id)"/>
+            <column name="subscriber_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_subscriber_user" references="user(id)"/>
             </column>
             <column name="created" type="TIMESTAMP">
                 <constraints nullable="false"/>
@@ -102,5 +105,22 @@
             </column>
         </createTable>
 
+        <createTable tableName="like">
+            <column name="id" type="character varying (36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_like_user" references="user(id)"/>
+            </column>
+            <column name="tweet_id" type="character varying (36)">
+                <constraints nullable="false" foreignKeyName="fk_like_tweet" references="tweet(id)"/>
+            </column>
+            <column name="created" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

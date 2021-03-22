@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="authorName" id="changelog-1.0">
+        <insert tableName="role">
+            <column name="id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
+            <column name="role_name" value="USER"/>
+            <column name="created" value="2021-03-21 16:44:04.117"/>
+            <column name="updated" value="2021-03-21 16:44:04.117"/>
+        </insert>
+
+        <insert tableName="role">
+            <column name="id" value="59f4c678-9fa1-4f23-bdf7-d8cd8dfbfe3e"/>
+            <column name="role_name" value="MODERATOR"/>
+            <column name="created" value="2021-03-21 16:44:04.118"/>
+            <column name="updated" value="2021-03-21 16:44:04.118"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
