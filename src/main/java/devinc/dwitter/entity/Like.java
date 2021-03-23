@@ -13,9 +13,8 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper=true)
 public class Like extends AbstractEntity{
-
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     private User user;
 

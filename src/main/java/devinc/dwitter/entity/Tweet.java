@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper=true)
 public class Tweet extends AbstractEntity {
     @Column(name = "content")
     private String content;

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper=true)
 public class Thread extends AbstractEntity {
     @Column(name = "topic")
     private String topic;

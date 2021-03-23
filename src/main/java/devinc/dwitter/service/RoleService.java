@@ -10,11 +10,9 @@ public interface RoleService {
 
     Role getByRoleName(String roleName);
 
-    void save(Role role);
+    void save(Role entity);
 
     List<Role> getAll();
-
-    void update(Role role);
 
     void delete(UUID id);
 }

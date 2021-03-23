@@ -8,11 +8,9 @@ import java.util.UUID;
 public interface LikeService {
     Like getById(UUID id);
 
-    void save(Like like);
+    void save(Like entity);
 
     List<Like> getAll();
-
-    void update(Like like);
 
     void delete(UUID id);
 }

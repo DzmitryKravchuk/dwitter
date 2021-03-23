@@ -10,9 +10,9 @@ import javax.persistence.Table;
 @Table(name = "role")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@NoArgsConstructor
+@ToString(callSuper = true)
 public class Role extends AbstractEntity {
     @Column(name = "role_name")
     private String name;

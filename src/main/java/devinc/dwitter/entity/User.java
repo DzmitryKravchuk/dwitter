@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(callSuper=true)
 public class User extends AbstractEntity {
     @Column(name = "user_name")
     private String name;
@@ -29,6 +29,6 @@ public class User extends AbstractEntity {
     private  boolean isActive;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "author_subscriber", joinColumns = @JoinColumn(name = "author_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
+    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> subscribedUsersList;
 }

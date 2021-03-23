@@ -8,11 +8,9 @@ import java.util.UUID;
 public interface UserService {
     User getById(UUID id);
 
-    void save(User like);
+    void save(User entity);
 
     List<User> getAll();
-
-    void update(User like);
 
     void delete(UUID id);
 }

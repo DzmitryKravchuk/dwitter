@@ -1,23 +1,21 @@
 package devinc.dwitter.service.impl;
 
 import devinc.dwitter.entity.Role;
-import devinc.dwitter.exception.NotFoundObjectException;
+import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.repository.RoleRepository;
 import devinc.dwitter.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Setter
 public class RoleServiceImpl implements RoleService {
-
     private final RoleRepository repository;
 
 
@@ -25,38 +23,41 @@ public class RoleServiceImpl implements RoleService {
     public Role getById(UUID id) {
         Role role = repository.findById(id).orElse(null);
         if (role == null) {
-            throw new NotFoundObjectException(repository.getClass().getName() + " object with index " + id + " not found");
+            throw new ObjectNotFoundException(Role.class.getName() + " object with index " + id + " not found");
         }
         return role;
     }
 
     @Override
     public Role getByRoleName(String roleName) {
-        Role role = new Role();
-        role.setName(roleName);
-        Example<Role> example = Example.of(role);
-        Role roleOptional = repository.findOne(example).get();
-
-        return roleOptional;
+        Role role = repository.findByName(roleName);
+        if (role == null) {
+            throw new ObjectNotFoundException(Role.class.getName() + " object with name " + roleName + " not found");
+        }
+        return role;
     }
 
     @Override
-    public void save(Role role) {
-        repository.save(role);
+    public void save(Role entity) {
+        Date currentDate = new Date();
+        entity.setUpdated(currentDate);
+        if (entity.getId() == null) {
+            entity.setCreated(currentDate);
+        }
+        repository.save(entity);
     }
 
     @Override
     public List<Role> getAll() {
-        return null;
-    }
-
-    @Override
-    public void update(Role like) {
-
+        List<Role> roleList = repository.findAll();
+        if (roleList.isEmpty()) {
+            throw new ObjectNotFoundException(Role.class.getName() + " not a single object was found");
+        }
+        return roleList;
     }
 
     @Override
     public void delete(UUID id) {
-
+        repository.deleteById(id);
     }
 }
