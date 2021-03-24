@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class UserServiceTest {
+public class RoleServiceTest {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceTest(RoleService roleService) {
+    public RoleServiceTest(RoleService roleService) {
         this.roleService = roleService;
     }
 

@@ -28,7 +28,6 @@ public class User extends AbstractEntity {
     @Column(name = "is_active")
     private  boolean isActive;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> subscribedUsersList;
+    @OneToMany (fetch=FetchType.EAGER)
+        private Set<User> subscribersList;
 }
