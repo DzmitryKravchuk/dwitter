@@ -29,5 +29,5 @@ public class User extends AbstractEntity {
     private  boolean isActive;
 
     @OneToMany (fetch=FetchType.EAGER)
-        private Set<User> subscribersList;
+        private Set<User> subscriberList;
 }
