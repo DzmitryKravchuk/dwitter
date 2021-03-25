@@ -14,13 +14,13 @@ public interface UserService {
 
     void delete(UUID id);
 
-    List<User> getByUserName(String name);
+    User getByUserName(String name);
 
     void deactivateAccount(UUID id);
 
     void restoreAccount(UUID id);
 
-    void addToSubscribeList(UUID userId, UUID subscribeToUserId);
+    void addToSubscribersList(UUID userId, UUID subscribeToUserId);
 
-    void removeFromSubscribeList(UUID userId, UUID subscribeToUserId);
+    void removeFromSubscribersList(UUID userId, UUID subscribeToUserId);
 }

@@ -28,6 +28,11 @@ public class User extends AbstractEntity {
     @Column(name = "is_active")
     private  boolean isActive;
 
-    @OneToMany (fetch=FetchType.EAGER)
-        private Set<User> subscriberList;
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "subscriber_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+        private Set<User> usersSubscribedToList;
+
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
+    private Set<User> subscribersList;
 }

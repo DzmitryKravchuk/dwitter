@@ -30,20 +30,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getByUserName(String name) {
-        List<User> entityList = repository.findByNameContainingIgnoreCase(name);
-        if (entityList.isEmpty()) {
+    public User getByUserName(String name) {
+        User entity = repository.findByName(name);
+        if (entity == null) {
             throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
         }
-        List<User> activeEntityList = filterActiveUsers(entityList);
-        if (activeEntityList.isEmpty()) {
-            throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
-        }
-        return activeEntityList;
+        return entity;
     }
 
     private List<User> filterActiveUsers(List<User> entityList) {
-        return entityList.stream().filter(e -> e.isActive()).collect(Collectors.toList());
+        return entityList.stream().filter(User::isActive).collect(Collectors.toList());
     }
 
     @Override
@@ -62,20 +58,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addToSubscribeList(UUID userId, UUID subscribeToUserId) {
+    public void addToSubscribersList(UUID userId, UUID subscriberId) {
         User user = getById(userId);
-        User userToSubscribe = getById(subscribeToUserId);
-        Set <User> subscribeList = user.getSubscriberList();
-        subscribeList.add(userToSubscribe);
+        User subscriber = getById(subscriberId);
+        Set <User> subscribersList = user.getSubscribersList();
+        subscribersList.add(subscriber);
         save(user);
     }
 
     @Override
-    public void removeFromSubscribeList(UUID userId, UUID subscribeToUserId) {
+    public void removeFromSubscribersList(UUID userId, UUID subscriberId) {
         User user = getById(userId);
-        User userToSubscribe = getById(subscribeToUserId);
-        Set <User> subscribeList = user.getSubscriberList();
-        subscribeList.remove(userToSubscribe);
+        User subscriber = getById(subscriberId);
+        Set <User> subscribersList = user.getSubscribersList();
+        subscribersList.remove(subscriber);
         save(user);
     }
 
