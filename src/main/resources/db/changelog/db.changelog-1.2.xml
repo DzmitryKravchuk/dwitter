@@ -5,52 +5,57 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="authorName" id="changelog-1.0">
-        <insert tableName="user">
+        <insert tableName="user_account">
             <column name="id" value="fd12a0d9-0f25-491f-91e7-6945f1fe4278"/>
             <column name="login" value="user1@mail.com"/>
             <column name="password" value="user1"/>
             <column name="user_name" value="user1"/>
             <column name="role_id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
+            <column name="is_active" value="true"/>
             <column name="created" value="2021-03-22 16:44:04.117"/>
             <column name="updated" value="2021-03-22 16:44:04.117"/>
         </insert>
 
-        <insert tableName="user">
+        <insert tableName="user_account">
             <column name="id" value="1e0751b0-04bf-43ab-980a-9fd6657d5ee4"/>
             <column name="login" value="user2@mail.com"/>
             <column name="password" value="user2"/>
             <column name="user_name" value="user2"/>
             <column name="role_id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
+            <column name="is_active" value="true"/>
             <column name="created" value="2021-03-22 16:44:04.118"/>
             <column name="updated" value="2021-03-22 16:44:04.118"/>
         </insert>
 
-        <insert tableName="user">
+        <insert tableName="user_account">
             <column name="id" value="8cb9e91e-08df-4499-9be1-b4a2a4930ec0"/>
             <column name="login" value="user3@mail.com"/>
             <column name="password" value="user3"/>
             <column name="user_name" value="user3"/>
             <column name="role_id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
+            <column name="is_active" value="true"/>
             <column name="created" value="2021-03-22 16:44:04.119"/>
             <column name="updated" value="2021-03-22 16:44:04.119"/>
         </insert>
 
-        <insert tableName="user">
+        <insert tableName="user_account">
             <column name="id" value="903963a2-03f4-48f8-95a0-75dc3813fba3"/>
             <column name="login" value="user4@mail.com"/>
             <column name="password" value="user4"/>
             <column name="user_name" value="user4"/>
             <column name="role_id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
+            <column name="is_active" value="true"/>
             <column name="created" value="2021-03-22 16:44:04.120"/>
             <column name="updated" value="2021-03-22 16:44:04.120"/>
         </insert>
 
-        <insert tableName="user">
+        <insert tableName="user_account">
             <column name="id" value="ff5fc811-f67b-4e22-941c-212a6c61660d"/>
             <column name="login" value="moder1@mail.com"/>
             <column name="password" value="moder1"/>
             <column name="user_name" value="moder1"/>
             <column name="role_id" value="59f4c678-9fa1-4f23-bdf7-d8cd8dfbfe3e"/>
+            <column name="is_active" value="true"/>
             <column name="created" value="2021-03-22 16:44:04.100"/>
             <column name="updated" value="2021-03-22 16:44:04.100"/>
         </insert>

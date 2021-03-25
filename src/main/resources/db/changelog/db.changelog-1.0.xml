@@ -20,7 +20,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="user">
+        <createTable tableName="user_account">
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -36,7 +36,9 @@
             <column name="role_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_user_role" references="role(id)"/>
             </column>
-            <column name="is_active" type="BOOLEAN"/>
+            <column name="is_active" type="BOOLEAN">
+            <constraints nullable="false"/>
+            </column>
             <column name="created" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
@@ -71,7 +73,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="UUID">
-                <constraints nullable="false" foreignKeyName="fk_tweet_user" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_tweet_user" references="user_account(id)"/>
             </column>
             <column name="thread_id" type="UUID">
                 <constraints foreignKeyName="fk_tweet_thread" references="thread(id)"/>
@@ -92,10 +94,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="UUID">
-                <constraints nullable="false" foreignKeyName="fk_user_user" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_user_user" references="user_account(id)"/>
             </column>
             <column name="subscriber_id" type="UUID">
-                <constraints nullable="false" foreignKeyName="fk_subscriber_user" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_subscriber_user" references="user_account(id)"/>
             </column>
             <column name="created" type="TIMESTAMP">
                 <constraints nullable="false"/>
@@ -110,7 +112,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="user_id" type="UUID">
-                <constraints nullable="false" foreignKeyName="fk_like_user" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_like_user" references="user_account(id)"/>
             </column>
             <column name="tweet_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_like_tweet" references="tweet(id)"/>

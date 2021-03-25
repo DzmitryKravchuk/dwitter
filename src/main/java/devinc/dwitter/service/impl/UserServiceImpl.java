@@ -30,12 +30,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByUserName(String name) {
-        User entity = repository.findByName(name);
-        if (entity == null) {
+    public List<User> getByUserName(String name) {
+        List<User> entityList = repository.findAllByNameContainingIgnoreCase(name);
+        if (entityList.isEmpty()) {
             throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
         }
-        return entity;
+        return entityList;
     }
 
     private List<User> filterActiveUsers(List<User> entityList) {
@@ -61,18 +61,26 @@ public class UserServiceImpl implements UserService {
     public void addToSubscribersList(UUID userId, UUID subscriberId) {
         User user = getById(userId);
         User subscriber = getById(subscriberId);
-        Set <User> subscribersList = user.getSubscribersList();
+        Set<User> subscribersList = user.getSubscribersList();
+        Set<User> usersSubscribedToList = subscriber.getUsersSubscribedToList();
         subscribersList.add(subscriber);
+        usersSubscribedToList.add(user);
+
         save(user);
+        save(subscriber);
     }
 
     @Override
     public void removeFromSubscribersList(UUID userId, UUID subscriberId) {
         User user = getById(userId);
         User subscriber = getById(subscriberId);
-        Set <User> subscribersList = user.getSubscribersList();
+        Set<User> subscribersList = user.getSubscribersList();
+        Set<User> usersSubscribedToList = subscriber.getUsersSubscribedToList();
         subscribersList.remove(subscriber);
+        usersSubscribedToList.remove(user);
+
         save(user);
+        save(subscriber);
     }
 
     private void checkIfDeactivationTimeIsExpired(User entity) {
