@@ -13,11 +13,18 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper=true)
 public class Like extends AbstractEntity{
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Tweet.class)
     private Tweet tweet;
+
+    @Override
+    public String toString() {
+        return "Like{" +
+                "user=" + user.getName() +
+                ", tweet=" + tweet.getContent() +
+                '}';
+    }
 }

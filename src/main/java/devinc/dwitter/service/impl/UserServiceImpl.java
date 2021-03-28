@@ -61,7 +61,15 @@ public class UserServiceImpl implements UserService {
     public void addToSubscribersList(UUID userId, UUID subscriberId) {
         User user = getById(userId);
         User subscriber = getById(subscriberId);
+        if (user.getSubscribersList() == null) {
+            Set<User> subscribersList = new HashSet<>();
+            user.setSubscribersList(subscribersList);
+        }
         Set<User> subscribersList = user.getSubscribersList();
+        if (subscriber.getUsersSubscribedToList() == null) {
+            Set<User> usersSubscribedToList = new HashSet<>();
+            subscriber.setUsersSubscribedToList(usersSubscribedToList);
+        }
         Set<User> usersSubscribedToList = subscriber.getUsersSubscribedToList();
         subscribersList.add(subscriber);
         usersSubscribedToList.add(user);
