@@ -5,7 +5,7 @@ import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
-import devinc.dwitter.repository.LikeRepository;
+import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.service.LikeService;
 import devinc.dwitter.service.TopicService;
@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +23,8 @@ import java.util.UUID;
 public class TweetServiceImpl implements TweetService {
     private final TweetRepository repository;
     private final UserService userService;
-    private  final TopicService topicService;
+    private final TopicService topicService;
+    private final LikeService likeService;
 
     @Override
     public Tweet getById(UUID id) {
@@ -63,24 +62,63 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId) {
         Tweet entity = new Tweet();
-        User user =userService.getById(userId);
+        User user = userService.getById(userId);
         entity.setUser(user);
-        Tweet repostedTweet = getById(repostedTweetId);
-        if (repostedTweet != null && s == null) {
-            entity.setTweet(repostedTweet);
+        if (repostedTweetId != null && s == null) {
+            Tweet repostedTweet = getById(repostedTweetId);
+            entity.setRepostedTweet(repostedTweet);
             entity.setContent("No comment");
-        } else if (repostedTweet != null) {
-            entity.setTweet(repostedTweet);
+        } else if (repostedTweetId != null) {
+            Tweet repostedTweet = getById(repostedTweetId);
+            entity.setRepostedTweet(repostedTweet);
             entity.setContent(s);
         } else {
             entity.setContent(s);
         }
-        Topic topic =topicService.getById(topicId);
-        if (topic != null) {
+
+        if (topicId != null) {
+            Topic topic = topicService.getById(topicId);
             entity.setTopic(topic);
         }
         save(entity);
         return entity;
+    }
+
+    @Override
+    public synchronized void likeTweet(UUID userId, UUID tweetId) {
+        User user = userService.getById(userId);
+        Tweet tweet = getById(tweetId);
+        if (tweet.getUser().getId().equals(user.getId())) {
+            throw new OperationForbiddenException("You can't put like on your own tweet");
+        }
+        if (tweet.getLikesList() == null) {
+            List<Like> likesList = new ArrayList<>();
+            tweet.setLikesList(likesList);
+        }
+        Like likeToDelete = null;
+        List<Like> likesList = tweet.getLikesList();
+        for (Like like : likesList) {
+            if (like.getUser().getId().equals(userId)) {
+                likeToDelete = like;
+            }
+        }
+        if (likeToDelete != null) {
+            tweet.setLikesCount(tweet.getLikesCount() - 1);
+            likesList.remove(likeToDelete);
+            likeService.delete(likeToDelete.getId());
+        } else {
+            Like like = new Like(user, tweet);
+            likeService.save(like);
+            likesList.add(like);
+            tweet.setLikesCount(tweet.getLikesCount() + 1);
+        }
+
+        save(tweet);
+    }
+
+    @Override
+    public List<Tweet> getAllReposts(UUID tweetId) {
+        return repository.getAllReposts(tweetId);
     }
 }
 

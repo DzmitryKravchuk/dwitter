@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "thread")
+@Table(name = "topic")
 @Getter
 @Setter
 @NoArgsConstructor

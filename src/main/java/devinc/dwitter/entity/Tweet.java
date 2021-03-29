@@ -25,7 +25,7 @@ public class Tweet extends AbstractEntity {
     private Topic topic;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Tweet.class)
-    private Tweet tweet;
+    private Tweet repostedTweet;
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.EAGER)
     private List<Like> likesList;

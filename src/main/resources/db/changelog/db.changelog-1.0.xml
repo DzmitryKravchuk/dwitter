@@ -47,7 +47,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="thread">
+        <createTable tableName="topic">
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -75,8 +75,8 @@
             <column name="user_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_tweet_user" references="user_account(id)"/>
             </column>
-            <column name="thread_id" type="UUID">
-                <constraints foreignKeyName="fk_tweet_thread" references="thread(id)"/>
+            <column name="topic_id" type="UUID">
+                <constraints foreignKeyName="fk_tweet_topic" references="topic(id)"/>
             </column>
             <column name="reposted_tweet_id" type="UUID">
                 <constraints foreignKeyName="fk_tweet_tweet" references="tweet(id)"/>

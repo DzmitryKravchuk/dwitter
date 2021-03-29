@@ -60,11 +60,16 @@ public class AbstractCreationTest {
     }
 
     protected Tweet createNewTweet(User user, String s, Topic topic, Tweet repostedTweet) {
-        final Tweet entity = new Tweet();
-        entity.setContent(s);
-        entity.setUser(user);
-        entity.setTweet(repostedTweet);
-        tweetService.save(entity);
+        UUID topicId = null;
+        UUID repostedTweetId = null;
+        if (topic != null) {
+            topicId = topic.getId();
+        }
+        if (repostedTweet != null) {
+            repostedTweetId = repostedTweet.getId();
+        }
+
+        final Tweet entity = tweetService.createTweet(user.getId(), s, topicId, repostedTweetId);
         return entity;
     }
 
