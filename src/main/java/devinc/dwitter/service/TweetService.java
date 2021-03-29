@@ -16,5 +16,5 @@ public interface TweetService {
 
     void delete(UUID id);
 
-    Tweet createTweet(User user, String s, Topic topic, Tweet repostedTweet);
+    Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId);
 }

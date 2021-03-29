@@ -8,7 +8,9 @@ import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.repository.LikeRepository;
 import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.service.LikeService;
+import devinc.dwitter.service.TopicService;
 import devinc.dwitter.service.TweetService;
+import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.UUID;
 @Setter
 public class TweetServiceImpl implements TweetService {
     private final TweetRepository repository;
+    private final UserService userService;
+    private  final TopicService topicService;
 
     @Override
     public Tweet getById(UUID id) {
@@ -57,9 +61,11 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public Tweet createTweet(User user, String s, Topic topic, Tweet repostedTweet) {
+    public Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId) {
         Tweet entity = new Tweet();
+        User user =userService.getById(userId);
         entity.setUser(user);
+        Tweet repostedTweet = getById(repostedTweetId);
         if (repostedTweet != null && s == null) {
             entity.setTweet(repostedTweet);
             entity.setContent("No comment");
@@ -69,6 +75,7 @@ public class TweetServiceImpl implements TweetService {
         } else {
             entity.setContent(s);
         }
+        Topic topic =topicService.getById(topicId);
         if (topic != null) {
             entity.setTopic(topic);
         }
