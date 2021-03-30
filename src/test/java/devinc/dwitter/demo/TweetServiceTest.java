@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,13 +26,16 @@ public class TweetServiceTest extends AbstractCreationTest {
         Tweet entityFromBase = tweetService.getById(tweet.getId());
         assertNotNull(entityFromBase.getId());
         assertEquals(tweet.getContent(), entityFromBase.getContent());
-        assertEquals(user.getName(), entityFromBase.getUser().getName());
+        assertEquals(user.getName(), entityFromBase.getUserAccount().getName());
 
         final Topic topic = createNewTopic();
         tweet.setTopic(topic);
         tweetService.save(tweet);
         entityFromBase = tweetService.getById(tweet.getId());
         assertEquals(entityFromBase.getTopic().getTopic(), topic.getTopic());
+
+        final User userFromBase = userService.getById(user.getId());
+        assertEquals(userFromBase.getTweetList().size(),1);
 
         tweetService.delete(tweet.getId());
         topicService.delete(topic.getId());
@@ -47,7 +51,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         tweetService.likeTweet(secondUser.getId(), tweet.getId());
         Tweet entityFromBase = tweetService.getById(tweet.getId());
         assertNotNull(entityFromBase.getId());
-        assertEquals(entityFromBase.getUser().getId(), firstUser.getId());
+        assertEquals(entityFromBase.getUserAccount().getId(), firstUser.getId());
         assertEquals(entityFromBase.getLikesCount(), 1);
         assertEquals(entityFromBase.getLikesList().get(0).getUser().getId(), secondUser.getId());
 
@@ -90,8 +94,29 @@ public class TweetServiceTest extends AbstractCreationTest {
         List<Tweet> getAllReposts = tweetService.getAllReposts(tweet1.getId());
         assertEquals(getAllReposts.size(), 2);
     }
+    @Test
+    public void getAllTweetsOfTopic() {
+        final User firstUser = createNewUser();
+        final Topic topic = createNewTopic();
+        Tweet tweet1 = createNewTweet(firstUser, "Hello world!!!", topic, null);
+        Tweet tweet2 = createNewTweet(firstUser, "One more time", topic, null);
+        List<Tweet> getAllTweetsOfTopic = tweetService.getAllTweetsOfTopic(topic.getId());
+        assertEquals(getAllTweetsOfTopic.size(), 2);
+    }
 
-    //TODO get all tweets of a thread
-    //TODO get all tweets of usersSubscribedToList
-
+    @Test
+    public void getAllTweetsOfUsersSubscribedToList() throws InterruptedException {
+        final User firstUser = createNewUser();
+        final User secondUser = createNewUser();
+        final User subscriber = createNewUser();
+        Tweet tweet1 = createNewTweet(firstUser, "Hello world!!!", null, null);
+        Tweet tweet2 = createNewTweet(secondUser, "One more time", null, null);
+        TimeUnit.SECONDS.sleep(1);
+        Tweet tweet3 = createNewTweet(firstUser, "comment", null, tweet2);
+        userService.addToSubscribersList(firstUser.getId(),subscriber.getId());
+        userService.addToSubscribersList(secondUser.getId(),subscriber.getId());
+        List<Tweet> allTweetsOfUsersSubscribedToList = tweetService.getAllTweetsOfUsersSubscribedToList(subscriber.getId());
+        assertEquals(allTweetsOfUsersSubscribedToList.size(), 3);
+        assertEquals(allTweetsOfUsersSubscribedToList.get(0).getId(), tweet3.getId());
+    }
 }

@@ -22,7 +22,7 @@ public class User extends AbstractEntity {
     @Column(name = "password")
     private String password;
 
-    @OneToMany (mappedBy="user", fetch=FetchType.EAGER)
+    @OneToMany (mappedBy="userAccount", fetch=FetchType.EAGER)
     private List<Tweet> tweetList;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Role.class)

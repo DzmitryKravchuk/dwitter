@@ -63,7 +63,31 @@ public class TweetServiceImpl implements TweetService {
     public Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId) {
         Tweet entity = new Tweet();
         User user = userService.getById(userId);
-        entity.setUser(user);
+        entity.setUserAccount(user);
+        checkIsRepost(s, repostedTweetId, entity);
+        checkHasTopic(topicId, entity);
+        save(entity);
+        addToTweetList(entity, user);
+        return entity;
+    }
+
+    private void addToTweetList(Tweet entity, User user) {
+        if (user.getTweetList() == null) {
+            List<Tweet> tweetList = new ArrayList<>();
+            user.setTweetList(tweetList);
+        }
+        user.getTweetList().add(entity);
+        userService.save(user);
+    }
+
+    private void checkHasTopic(UUID topicId, Tweet entity) {
+        if (topicId != null) {
+            Topic topic = topicService.getById(topicId);
+            entity.setTopic(topic);
+        }
+    }
+
+    private void checkIsRepost(String s, UUID repostedTweetId, Tweet entity) {
         if (repostedTweetId != null && s == null) {
             Tweet repostedTweet = getById(repostedTweetId);
             entity.setRepostedTweet(repostedTweet);
@@ -75,50 +99,80 @@ public class TweetServiceImpl implements TweetService {
         } else {
             entity.setContent(s);
         }
-
-        if (topicId != null) {
-            Topic topic = topicService.getById(topicId);
-            entity.setTopic(topic);
-        }
-        save(entity);
-        return entity;
     }
 
     @Override
-    public synchronized void likeTweet(UUID userId, UUID tweetId) {
+    public void likeTweet(UUID userId, UUID tweetId) {
         User user = userService.getById(userId);
         Tweet tweet = getById(tweetId);
-        if (tweet.getUser().getId().equals(user.getId())) {
+        if (tweet.getUserAccount().getId().equals(user.getId())) {
             throw new OperationForbiddenException("You can't put like on your own tweet");
         }
-        if (tweet.getLikesList() == null) {
-            List<Like> likesList = new ArrayList<>();
-            tweet.setLikesList(likesList);
-        }
-        Like likeToDelete = null;
+        checkIfLikeListIsNull(tweet);
         List<Like> likesList = tweet.getLikesList();
+        Like likeToDelete = getLikeToDeleteIfExists(userId, likesList);
+
+        if (likeToDelete != null) {
+            reduseLikesCount(tweet, likesList, likeToDelete);
+        } else {
+            increaseLikesCount(user, tweet, likesList);
+        }
+        save(tweet);
+    }
+
+    private void increaseLikesCount(User user, Tweet tweet, List<Like> likesList) {
+        Like like = new Like(user, tweet);
+        likeService.save(like);
+        likesList.add(like);
+        tweet.setLikesCount(tweet.getLikesCount() + 1);
+    }
+
+    private void reduseLikesCount(Tweet tweet, List<Like> likesList, Like likeToDelete) {
+        tweet.setLikesCount(tweet.getLikesCount() - 1);
+        likesList.remove(likeToDelete);
+        likeService.delete(likeToDelete.getId());
+    }
+
+    private Like getLikeToDeleteIfExists(UUID userId, List<Like> likesList) {
+        Like likeToDelete = null;
         for (Like like : likesList) {
             if (like.getUser().getId().equals(userId)) {
                 likeToDelete = like;
             }
         }
-        if (likeToDelete != null) {
-            tweet.setLikesCount(tweet.getLikesCount() - 1);
-            likesList.remove(likeToDelete);
-            likeService.delete(likeToDelete.getId());
-        } else {
-            Like like = new Like(user, tweet);
-            likeService.save(like);
-            likesList.add(like);
-            tweet.setLikesCount(tweet.getLikesCount() + 1);
-        }
+        return likeToDelete;
+    }
 
-        save(tweet);
+    private void checkIfLikeListIsNull(Tweet tweet) {
+        if (tweet.getLikesList() == null) {
+            List<Like> likesList = new ArrayList<>();
+            tweet.setLikesList(likesList);
+        }
     }
 
     @Override
     public List<Tweet> getAllReposts(UUID tweetId) {
         return repository.getAllReposts(tweetId);
+    }
+
+    @Override
+    public List<Tweet> getAllTweetsOfTopic(UUID topicId) {
+        return repository.getAllTweetsOfTopic(topicId);
+    }
+
+    @Override
+    public List<Tweet> getAllTweetsOfUsersSubscribedToList(UUID subscriberId) {
+        User subscriber = userService.getById(subscriberId);
+        if (subscriber.getUsersSubscribedToList() == null) {
+            throw new ObjectNotFoundException(User.class.getName() + " " + subscriber.getName() + "is not subscribed to anyone");
+        }
+        Set<User> usersSubscribedToList = subscriber.getUsersSubscribedToList();
+        List<Tweet> allTweetsOfUsersSubscribedToList = new ArrayList<>();
+        for (User user : usersSubscribedToList) {
+            allTweetsOfUsersSubscribedToList.addAll(user.getTweetList());
+        }
+        allTweetsOfUsersSubscribedToList.sort(Comparator.comparing(Tweet::getUpdated).reversed());
+        return allTweetsOfUsersSubscribedToList;
     }
 }
 

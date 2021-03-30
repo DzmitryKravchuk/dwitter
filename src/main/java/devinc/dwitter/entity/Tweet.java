@@ -19,7 +19,7 @@ public class Tweet extends AbstractEntity {
     private int likesCount;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
-    private User user;
+    private User userAccount;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Topic.class)
     private Topic topic;
@@ -35,7 +35,7 @@ public class Tweet extends AbstractEntity {
         return "Tweet{" +
                 "content='" + content + '\'' +
                 ", likesCount=" + likesCount +
-                ", user=" + user.getName() +
+                ", user=" + userAccount.getName() +
                 '}';
     }
 }

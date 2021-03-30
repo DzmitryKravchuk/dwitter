@@ -10,4 +10,7 @@ import java.util.UUID;
 public interface TweetRepository extends JpaRepository<Tweet, UUID> {
     @Query(value = "select * from tweet where tweet.reposted_tweet_id=?1", nativeQuery = true)
     List<Tweet> getAllReposts(UUID tweetId);
+
+    @Query(value = "select * from tweet where tweet.topic_id=?1", nativeQuery = true)
+    List<Tweet> getAllTweetsOfTopic(UUID topicId);
 }

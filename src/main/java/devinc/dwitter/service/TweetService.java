@@ -19,4 +19,8 @@ public interface TweetService {
     void likeTweet(UUID UserId, UUID tweetId);
 
     List<Tweet> getAllReposts(UUID tweetId);
+
+    List<Tweet> getAllTweetsOfTopic(UUID topicId);
+
+    List<Tweet> getAllTweetsOfUsersSubscribedToList(UUID subscriberId);
 }

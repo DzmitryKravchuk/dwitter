@@ -72,7 +72,7 @@
             <column name="likes" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="UUID">
+            <column name="user_account_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_tweet_user" references="user_account(id)"/>
             </column>
             <column name="topic_id" type="UUID">
