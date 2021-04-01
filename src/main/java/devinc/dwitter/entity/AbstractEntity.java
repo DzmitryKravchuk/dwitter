@@ -25,4 +25,7 @@ public abstract class AbstractEntity {
 
     @Column
     private Date updated;
+
+    public AbstractEntity(UUID id) {
+    }
 }

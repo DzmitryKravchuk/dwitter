@@ -3,10 +3,14 @@ package devinc.dwitter.service.impl;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
+import devinc.dwitter.exception.PasswordIncorrectException;
 import devinc.dwitter.repository.UserRepository;
+import devinc.dwitter.service.RoleService;
 import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,7 +22,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private static final int DEACTIVATION_PERIOD = 180;
     private final UserRepository repository;
-
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getById(UUID id) {
@@ -46,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public void deactivateAccount(UUID id) {
         User entity = getById(id);
         entity.setActive(false);
-        save(entity);
+        saveUser(entity);
     }
 
     @Override
@@ -54,7 +59,7 @@ public class UserServiceImpl implements UserService {
         User entity = getById(id);
         checkIfDeactivationTimeIsExpired(entity);
         entity.setActive(true);
-        save(entity);
+        saveUser(entity);
     }
 
     @Override
@@ -74,8 +79,8 @@ public class UserServiceImpl implements UserService {
         subscribersList.add(subscriber);
         usersSubscribedToList.add(user);
 
-        save(user);
-        save(subscriber);
+        saveUser(user);
+        saveUser(subscriber);
     }
 
     @Override
@@ -87,8 +92,26 @@ public class UserServiceImpl implements UserService {
         subscribersList.remove(subscriber);
         usersSubscribedToList.remove(user);
 
-        save(user);
-        save(subscriber);
+        saveUser(user);
+        saveUser(subscriber);
+    }
+
+    @Override
+    public User findByLogin(String login) {
+        User entity= repository.findByLogin(login);
+        if (entity == null) {
+            throw new ObjectNotFoundException(User.class.getName() + " object with login " + login + " not found");
+        }
+        return entity;
+    }
+
+    @Override
+    public User findByLoginAndPassword(String login, String password) {
+        User user = findByLogin(login);
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        }
+        throw new PasswordIncorrectException("wrong password");
     }
 
     private void checkIfDeactivationTimeIsExpired(User entity) {
@@ -104,11 +127,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User entity) {
+    public void saveUser(User entity) {
         Date currentDate = new Date();
         entity.setUpdated(currentDate);
         if (entity.getId() == null) {
             entity.setCreated(currentDate);
+            entity.setRole(roleService.getByRoleName("ROLE_USER"));
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
         repository.save(entity);
     }

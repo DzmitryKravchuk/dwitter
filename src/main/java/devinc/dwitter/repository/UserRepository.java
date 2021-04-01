@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> findAllByNameContainingIgnoreCase(String name);
+    User findByLogin(String login);
 }

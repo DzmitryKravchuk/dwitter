@@ -77,7 +77,7 @@ public class TweetServiceImpl implements TweetService {
             user.setTweetList(tweetList);
         }
         user.getTweetList().add(entity);
-        userService.save(user);
+        userService.saveUser(user);
     }
 
     private void checkHasTopic(UUID topicId, Tweet entity) {

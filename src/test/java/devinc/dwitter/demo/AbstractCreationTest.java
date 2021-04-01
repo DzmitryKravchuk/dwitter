@@ -2,9 +2,6 @@ package devinc.dwitter.demo;
 
 import devinc.dwitter.entity.*;
 import devinc.dwitter.service.*;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,20 +32,13 @@ public class AbstractCreationTest {
         return RANDOM.nextInt(99999);
     }
 
-    protected Role createNewRole() {
-        final Role entity = new Role("SUPER_ROLE");
-        roleService.save(entity);
-        return entity;
-    }
-
     protected User createNewUser() {
         final User entity = new User();
         entity.setName("SuperUser" + getRandomInt());
         entity.setActive(true);
         entity.setLogin(entity.getName() + "@mail.com");
         entity.setPassword(entity.getName());
-        entity.setRole(createNewRole());
-        userService.save(entity);
+        userService.saveUser(entity);
         return entity;
     }
 
