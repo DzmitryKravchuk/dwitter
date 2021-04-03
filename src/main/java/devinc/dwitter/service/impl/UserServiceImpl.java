@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Setter
 public class UserServiceImpl implements UserService {
-    private static final int DEACTIVATION_PERIOD = 180;
     private final UserRepository repository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
@@ -41,25 +40,6 @@ public class UserServiceImpl implements UserService {
             throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
         }
         return entityList;
-    }
-
-    private List<User> filterActiveUsers(List<User> entityList) {
-        return entityList.stream().filter(User::isActive).collect(Collectors.toList());
-    }
-
-    @Override
-    public void deactivateAccount(UUID id) {
-        User entity = getById(id);
-        entity.setActive(false);
-        saveUser(entity);
-    }
-
-    @Override
-    public void restoreAccount(UUID id) {
-        User entity = getById(id);
-        checkIfDeactivationTimeIsExpired(entity);
-        entity.setActive(true);
-        saveUser(entity);
     }
 
     @Override
@@ -114,18 +94,6 @@ public class UserServiceImpl implements UserService {
         throw new PasswordIncorrectException("wrong password");
     }
 
-    private void checkIfDeactivationTimeIsExpired(User entity) {
-        if (entity.isActive()) {
-            return;
-        }
-        Date currentDate = new Date();
-        long diff = currentDate.getTime() - entity.getUpdated().getTime();
-        int daysPassed = (int) (diff / 1000 / 60 / 60 / 24);
-        if (daysPassed > DEACTIVATION_PERIOD) {
-            throw new OperationForbiddenException("Can't restore account for expiring term");
-        }
-    }
-
     @Override
     public void saveUser(User entity) {
         Date currentDate = new Date();
@@ -133,6 +101,7 @@ public class UserServiceImpl implements UserService {
         if (entity.getId() == null) {
             entity.setCreated(currentDate);
             entity.setRole(roleService.getByRoleName("ROLE_USER"));
+            entity.setActive(true);
             entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
         repository.save(entity);
@@ -140,11 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        List<User> entityList = repository.findAll();
-        if (entityList.isEmpty()) {
-            throw new ObjectNotFoundException(User.class.getName() + " not a single object was found");
-        }
-        return entityList;
+        return repository.findAll();
     }
 
     @Override

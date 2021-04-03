@@ -1,7 +1,9 @@
 package devinc.dwitter.service;
 
 import devinc.dwitter.entity.Tweet;
+import devinc.dwitter.entity.dto.NewTweetDto;
 
+import javax.servlet.ServletRequest;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +16,7 @@ public interface TweetService {
 
     void delete(UUID id);
 
-    Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId);
+    Tweet createTweet(NewTweetDto tweetDto,UUID UserId);
 
     void likeTweet(UUID UserId, UUID tweetId);
 
@@ -23,4 +25,6 @@ public interface TweetService {
     List<Tweet> getAllTweetsOfTopic(UUID topicId);
 
     List<Tweet> getAllTweetsOfUsersSubscribedToList(UUID subscriberId);
+
+    void createTweetWithToken(NewTweetDto dto, ServletRequest servletRequest);
 }

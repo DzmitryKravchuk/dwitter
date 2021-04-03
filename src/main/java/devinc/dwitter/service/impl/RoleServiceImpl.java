@@ -49,11 +49,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> getAll() {
-        List<Role> roleList = repository.findAll();
-        if (roleList.isEmpty()) {
-            throw new ObjectNotFoundException(Role.class.getName() + " not a single object was found");
-        }
-        return roleList;
+        return repository.findAll();
     }
 
     @Override

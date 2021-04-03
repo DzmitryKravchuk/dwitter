@@ -3,6 +3,8 @@ package devinc.dwitter.demo;
 import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
+import devinc.dwitter.exception.ObjectNotFoundException;
+import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.service.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TweetServiceTest extends AbstractCreationTest {
     @Autowired
@@ -47,7 +48,9 @@ public class TweetServiceTest extends AbstractCreationTest {
         final User firstUser = createNewUser();
         final User secondUser = createNewUser();
         Tweet tweet = createNewTweet(firstUser, "Hello world!!!", null, null);
-        //tweetService.likeTweet(firstUser.getId(), tweet.getId()); // throws exception
+        assertThrows(OperationForbiddenException.class, () -> {
+            tweetService.likeTweet(firstUser.getId(), tweet.getId()); // throws exception
+        });
         tweetService.likeTweet(secondUser.getId(), tweet.getId());
         Tweet entityFromBase = tweetService.getById(tweet.getId());
         assertNotNull(entityFromBase.getId());
@@ -71,6 +74,10 @@ public class TweetServiceTest extends AbstractCreationTest {
         Tweet entityFromBase2 = tweetService.getById(tweet2.getId());
         assertEquals(entityFromBase1.getId(), entityFromBase2.getRepostedTweet().getId());
         assertEquals(entityFromBase2.getContent(), "Hi, bro!!!");
+        tweetService.delete(tweet1.getId());
+        assertThrows(ObjectNotFoundException.class, () -> {
+            tweetService.getById(tweet2.getId());
+        });
     }
     @Test
     public void repostTweetNoComment() {

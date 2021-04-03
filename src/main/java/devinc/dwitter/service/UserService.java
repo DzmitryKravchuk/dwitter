@@ -16,10 +16,6 @@ public interface UserService {
 
     List<User> getByUserName(String name);
 
-    void deactivateAccount(UUID id);
-
-    void restoreAccount(UUID id);
-
     void addToSubscribersList(UUID userId, UUID subscriberId);
 
     void removeFromSubscribersList(UUID userId, UUID subscriberId);

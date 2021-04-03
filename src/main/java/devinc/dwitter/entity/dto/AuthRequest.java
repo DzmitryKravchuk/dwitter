@@ -1,4 +1,4 @@
-package devinc.dwitter.controller;
+package devinc.dwitter.entity.dto;
 
 import lombok.Data;
 

@@ -39,11 +39,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> getAll() {
-        List<Topic> entityList = repository.findAll();
-        if (entityList.isEmpty()) {
-            throw new ObjectNotFoundException(Topic.class.getName() + " not a single object was found");
-        }
-        return entityList;
+        return repository.findAll();
     }
 
     @Override

@@ -4,17 +4,16 @@ import devinc.dwitter.entity.Like;
 import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
+import devinc.dwitter.entity.dto.NewTweetDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.TweetRepository;
-import devinc.dwitter.service.LikeService;
-import devinc.dwitter.service.TopicService;
-import devinc.dwitter.service.TweetService;
-import devinc.dwitter.service.UserService;
+import devinc.dwitter.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletRequest;
 import java.util.*;
 
 @Service
@@ -25,6 +24,7 @@ public class TweetServiceImpl implements TweetService {
     private final UserService userService;
     private final TopicService topicService;
     private final LikeService likeService;
+    private final AuthService authService;
 
     @Override
     public Tweet getById(UUID id) {
@@ -47,25 +47,26 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<Tweet> getAll() {
-        List<Tweet> entityList = repository.findAll();
-        if (entityList.isEmpty()) {
-            throw new ObjectNotFoundException(Like.class.getName() + " not a single object was found");
-        }
-        return entityList;
+        return repository.findAll();
     }
 
     @Override
     public void delete(UUID id) {
+        List<Tweet> reposts = getAllReposts(id);
+        reposts.stream().forEach(t -> repository.delete(t));
+        if (getById(id).getLikesList() != null) {
+            getById(id).getLikesList().forEach(l -> likeService.delete(l.getId()));
+        }
         repository.deleteById(id);
     }
 
     @Override
-    public Tweet createTweet(UUID userId, String s, UUID topicId, UUID repostedTweetId) {
+    public Tweet createTweet(NewTweetDto tweetDto, UUID userId) {
         Tweet entity = new Tweet();
         User user = userService.getById(userId);
         entity.setUserAccount(user);
-        checkIsRepost(s, repostedTweetId, entity);
-        checkHasTopic(topicId, entity);
+        checkIsRepost(tweetDto.getContent(), tweetDto.getRepostedTweetId(), entity);
+        checkHasTopic(tweetDto.getTopicId(), entity);
         save(entity);
         addToTweetList(entity, user);
         return entity;
@@ -113,7 +114,7 @@ public class TweetServiceImpl implements TweetService {
         Like likeToDelete = getLikeToDeleteIfExists(userId, likesList);
 
         if (likeToDelete != null) {
-            reduseLikesCount(tweet, likesList, likeToDelete);
+            reduceLikesCount(tweet, likesList, likeToDelete);
         } else {
             increaseLikesCount(user, tweet, likesList);
         }
@@ -127,7 +128,7 @@ public class TweetServiceImpl implements TweetService {
         tweet.setLikesCount(tweet.getLikesCount() + 1);
     }
 
-    private void reduseLikesCount(Tweet tweet, List<Like> likesList, Like likeToDelete) {
+    private void reduceLikesCount(Tweet tweet, List<Like> likesList, Like likeToDelete) {
         tweet.setLikesCount(tweet.getLikesCount() - 1);
         likesList.remove(likeToDelete);
         likeService.delete(likeToDelete.getId());
@@ -173,6 +174,11 @@ public class TweetServiceImpl implements TweetService {
         }
         allTweetsOfUsersSubscribedToList.sort(Comparator.comparing(Tweet::getUpdated).reversed());
         return allTweetsOfUsersSubscribedToList;
+    }
+
+    @Override
+    public void createTweetWithToken(NewTweetDto dto, ServletRequest servletRequest) {
+        createTweet(dto, authService.getUserFromToken(servletRequest).getId());
     }
 }
 

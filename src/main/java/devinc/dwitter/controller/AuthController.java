@@ -1,35 +1,32 @@
 package devinc.dwitter.controller;
 
-import devinc.dwitter.entity.User;
-import devinc.dwitter.security.jvt.JwtProvider;
-import devinc.dwitter.service.UserService;
+import devinc.dwitter.entity.dto.AuthRequest;
+import devinc.dwitter.entity.dto.AuthResponse;
+import devinc.dwitter.entity.dto.RegistrationRequest;
+import devinc.dwitter.entity.dto.UserDto;
+import devinc.dwitter.service.AuthService;
+import devinc.dwitter.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
-    private final JwtProvider jwtProvider;
+    private final RegistrationService registrationService;
+    private final AuthService authService;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
-        User u = new User();
-        u.setPassword(registrationRequest.getPassword());
-        u.setLogin(registrationRequest.getLogin());
-        u.setName(registrationRequest.getName());
-        userService.saveUser(u);
-        return "OK";
+    public UserDto registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
+        return registrationService.registerUser(registrationRequest);
     }
 
     @PostMapping("/auth")
     public AuthResponse auth(@RequestBody AuthRequest request) {
-        User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
-        String token = jwtProvider.generateToken(user.getLogin());
-        return new AuthResponse(token);
+        return authService.auth(request);
     }
 }
 

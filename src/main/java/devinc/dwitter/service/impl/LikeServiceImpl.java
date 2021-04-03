@@ -39,11 +39,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public List<Like> getAll() {
-        List<Like> entityList = repository.findAll();
-        if (entityList.isEmpty()) {
-            throw new ObjectNotFoundException(Like.class.getName() + " not a single object was found");
-        }
-        return entityList;
+        return repository.findAll();
     }
 
     @Override

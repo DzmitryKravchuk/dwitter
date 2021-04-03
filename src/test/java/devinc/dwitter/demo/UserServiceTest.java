@@ -42,15 +42,4 @@ public class UserServiceTest extends AbstractCreationTest {
         assertEquals(entityFromBase1.getSubscribersList().size(), 1);
         assertEquals(entityFromBase2.getUsersSubscribedToList().size(), 1);
     }
-
-    @Test
-    public void deactivateRestoreUserTest() {
-        final User entity = createNewUser();
-        userService.deactivateAccount(entity.getId());
-        User entityFromBase = userService.getById(entity.getId());
-        assertEquals(entityFromBase.isActive(), false);
-        userService.restoreAccount(entity.getId());
-        entityFromBase = userService.getById(entity.getId());
-        assertEquals(entityFromBase.isActive(), true);
-    }
 }
