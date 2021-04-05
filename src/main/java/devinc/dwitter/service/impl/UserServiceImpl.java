@@ -2,7 +2,6 @@ package devinc.dwitter.service.impl;
 
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
-import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.exception.PasswordIncorrectException;
 import devinc.dwitter.repository.UserRepository;
 import devinc.dwitter.service.RoleService;

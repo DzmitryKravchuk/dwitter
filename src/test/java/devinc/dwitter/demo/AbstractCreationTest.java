@@ -1,7 +1,7 @@
 package devinc.dwitter.demo;
 
 import devinc.dwitter.entity.*;
-import devinc.dwitter.entity.dto.NewTweetDto;
+import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,16 +50,12 @@ public class AbstractCreationTest {
         return entity;
     }
 
-    protected Tweet createNewTweet(User user, String s, Topic topic, Tweet repostedTweet) {
-        UUID topicId = null;
+    protected Tweet createNewTweet(User user, String s, String topic, Tweet repostedTweet) {
         UUID repostedTweetId = null;
-        if (topic != null) {
-            topicId = topic.getId();
-        }
         if (repostedTweet != null) {
             repostedTweetId = repostedTweet.getId();
         }
-        final NewTweetDto tweetDto = new NewTweetDto(s,repostedTweetId,topicId);
+        final TweetDto tweetDto = new TweetDto(s,repostedTweetId,topic);
         final Tweet entity = tweetService.createTweet(tweetDto,user.getId());
         return entity;
     }

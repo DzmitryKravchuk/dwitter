@@ -8,7 +8,7 @@
         <insert tableName="user_account">
             <column name="id" value="fd12a0d9-0f25-491f-91e7-6945f1fe4278"/>
             <column name="login" value="user1@mail.com"/>
-            <column name="password" value="$2a$10$tdwDnO.D42.tyQmu9tHNDO.LZyO3iqv4r5H1hXM5o8nJicwRqqntq"/>
+            <column name="password" value="$2a$10$9Dru27Z4VKL5p3J4Rslzt.Lr.db/ewwz2cHRU2cT9S2QK64URyZW6"/>
             <column name="user_name" value="user1"/>
             <column name="role_id" value="3c72602a-239b-4794-9709-60eb2af86fad"/>
             <column name="is_active" value="true"/>

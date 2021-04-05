@@ -104,10 +104,11 @@ public class TweetServiceTest extends AbstractCreationTest {
     @Test
     public void getAllTweetsOfTopic() {
         final User firstUser = createNewUser();
-        final Topic topic = createNewTopic();
+        final String topic="New topic";
         Tweet tweet1 = createNewTweet(firstUser, "Hello world!!!", topic, null);
         Tweet tweet2 = createNewTweet(firstUser, "One more time", topic, null);
-        List<Tweet> getAllTweetsOfTopic = tweetService.getAllTweetsOfTopic(topic.getId());
+        final Topic tFromBase = topicService.findByTopicOrCreate(topic);
+        List<Tweet> getAllTweetsOfTopic = tweetService.getAllTweetsOfTopic(tFromBase.getId());
         assertEquals(getAllTweetsOfTopic.size(), 2);
     }
 

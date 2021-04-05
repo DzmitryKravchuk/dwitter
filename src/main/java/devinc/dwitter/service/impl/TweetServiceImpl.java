@@ -4,11 +4,12 @@ import devinc.dwitter.entity.Like;
 import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
-import devinc.dwitter.entity.dto.NewTweetDto;
+import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.service.*;
+import devinc.dwitter.service.util.TweetDtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class TweetServiceImpl implements TweetService {
     private final TopicService topicService;
     private final LikeService likeService;
     private final AuthService authService;
+    private final TweetDtoConverter tweetDtoConverter;
 
     @Override
     public Tweet getById(UUID id) {
@@ -33,6 +35,13 @@ public class TweetServiceImpl implements TweetService {
             throw new ObjectNotFoundException(Tweet.class.getName() + " object with index " + id + " not found");
         }
         return entity;
+    }
+
+    @Override
+    public TweetDto getTweetDtoById(UUID id) {
+        Tweet entity = getById(id);
+        TweetDto dto = tweetDtoConverter.convertToDto(entity);
+        return dto;
     }
 
     @Override
@@ -61,12 +70,12 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public Tweet createTweet(NewTweetDto tweetDto, UUID userId) {
+    public Tweet createTweet(TweetDto tweetDto, UUID userId) {
         Tweet entity = new Tweet();
         User user = userService.getById(userId);
         entity.setUserAccount(user);
         checkIsRepost(tweetDto.getContent(), tweetDto.getRepostedTweetId(), entity);
-        checkHasTopic(tweetDto.getTopicId(), entity);
+        checkHasTopic(tweetDto.getTopic(), entity);
         save(entity);
         addToTweetList(entity, user);
         return entity;
@@ -81,10 +90,10 @@ public class TweetServiceImpl implements TweetService {
         userService.saveUser(user);
     }
 
-    private void checkHasTopic(UUID topicId, Tweet entity) {
-        if (topicId != null) {
-            Topic topic = topicService.getById(topicId);
-            entity.setTopic(topic);
+    private void checkHasTopic(String topic, Tweet entity) {
+        if (topic != null) {
+            Topic tFromBase = topicService.findByTopicOrCreate(topic);
+            entity.setTopic(tFromBase);
         }
     }
 
@@ -177,8 +186,9 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public void createTweetWithToken(NewTweetDto dto, ServletRequest servletRequest) {
+    public void createTweetWithToken(TweetDto dto, ServletRequest servletRequest) {
         createTweet(dto, authService.getUserFromToken(servletRequest).getId());
     }
+
 }
 
