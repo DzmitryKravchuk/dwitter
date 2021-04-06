@@ -2,6 +2,7 @@ package devinc.dwitter.service;
 
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.dto.TweetDto;
+import devinc.dwitter.entity.dto.TweetLikeDto;
 
 import javax.servlet.ServletRequest;
 import java.util.List;
@@ -18,7 +19,7 @@ public interface TweetService {
 
     Tweet createTweet(TweetDto tweetDto, UUID UserId);
 
-    void likeTweet(UUID UserId, UUID tweetId);
+    void likeTweet(TweetLikeDto dto, UUID UserId);
 
     List<Tweet> getAllReposts(UUID tweetId);
 
@@ -29,4 +30,8 @@ public interface TweetService {
     void createTweetWithToken(TweetDto dto, ServletRequest servletRequest);
 
     TweetDto getTweetDtoById(UUID id);
+
+    void likeTweetWithToken(TweetLikeDto dto, ServletRequest servletRequest);
+
+    void deleteTweetWithToken(UUID id, ServletRequest servletRequest);
 }

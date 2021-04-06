@@ -13,4 +13,6 @@ public interface LikeService {
     List<Like> getAll();
 
     void delete(UUID id);
+
+    List<Like> getAllByTweetId(UUID tweetId);
 }

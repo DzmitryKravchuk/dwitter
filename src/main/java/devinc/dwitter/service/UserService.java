@@ -1,7 +1,9 @@
 package devinc.dwitter.service;
 
 import devinc.dwitter.entity.User;
+import devinc.dwitter.entity.dto.UserDto;
 
+import javax.servlet.ServletRequest;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,4 +25,6 @@ public interface UserService {
     User findByLogin(String login);
 
     User findByLoginAndPassword(String login, String password);
+
+    void subscribeWithToken(UserDto dto, ServletRequest servletRequest);
 }

@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "like")
+@Table(name = "like_tweet")
 @Getter
 @Setter
 @NoArgsConstructor

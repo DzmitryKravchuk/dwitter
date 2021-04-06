@@ -2,12 +2,14 @@ package devinc.dwitter.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class UserDto {
+@NoArgsConstructor
+public class TweetLikeDto {
 
-    private UUID id;
+    private UUID tweetId;
 }

@@ -5,6 +5,7 @@ import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.TweetDto;
+import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.TweetRepository;
@@ -40,8 +41,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetDto getTweetDtoById(UUID id) {
         Tweet entity = getById(id);
-        TweetDto dto = tweetDtoConverter.convertToDto(entity);
-        return dto;
+        return tweetDtoConverter.convertToDto(entity);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class TweetServiceImpl implements TweetService {
     public void delete(UUID id) {
         List<Tweet> reposts = getAllReposts(id);
         reposts.stream().forEach(t -> repository.delete(t));
-        if (getById(id).getLikesList() != null) {
-            getById(id).getLikesList().forEach(l -> likeService.delete(l.getId()));
+        if (likeService.getAllByTweetId(id) != null) {
+            likeService.getAllByTweetId(id).forEach(l -> likeService.delete(l.getId()));
         }
         repository.deleteById(id);
     }
@@ -112,14 +112,14 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public void likeTweet(UUID userId, UUID tweetId) {
+    public void likeTweet(TweetLikeDto dto, UUID userId) {
         User user = userService.getById(userId);
-        Tweet tweet = getById(tweetId);
+        Tweet tweet = getById(dto.getTweetId());
         if (tweet.getUserAccount().getId().equals(user.getId())) {
             throw new OperationForbiddenException("You can't put like on your own tweet");
         }
         checkIfLikeListIsNull(tweet);
-        List<Like> likesList = tweet.getLikesList();
+        List<Like> likesList = likeService.getAllByTweetId(tweet.getId());
         Like likeToDelete = getLikeToDeleteIfExists(userId, likesList);
 
         if (likeToDelete != null) {
@@ -190,5 +190,19 @@ public class TweetServiceImpl implements TweetService {
         createTweet(dto, authService.getUserFromToken(servletRequest).getId());
     }
 
+    @Override
+    public void likeTweetWithToken(TweetLikeDto dto, ServletRequest servletRequest) {
+        likeTweet(dto, authService.getUserFromToken(servletRequest).getId());
+    }
+
+    @Override
+    public void deleteTweetWithToken(UUID id, ServletRequest servletRequest) {
+        Tweet tweet = getById(id);
+        User user = authService.getUserFromToken(servletRequest);
+        if (tweet.getUserAccount().getId() != user.getId()) {
+            throw new OperationForbiddenException("you can delete only your own tweet");
+        }
+        delete(id);
+    }
 }
 

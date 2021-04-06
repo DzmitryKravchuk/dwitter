@@ -1,8 +1,10 @@
 package devinc.dwitter.demo;
 
+import devinc.dwitter.entity.Like;
 import devinc.dwitter.entity.Topic;
 import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
+import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.service.*;
@@ -48,17 +50,19 @@ public class TweetServiceTest extends AbstractCreationTest {
         final User firstUser = createNewUser();
         final User secondUser = createNewUser();
         Tweet tweet = createNewTweet(firstUser, "Hello world!!!", null, null);
+        TweetLikeDto dto = new TweetLikeDto(tweet.getId());
         assertThrows(OperationForbiddenException.class, () -> {
-            tweetService.likeTweet(firstUser.getId(), tweet.getId()); // throws exception
+            tweetService.likeTweet(dto,firstUser.getId()); // throws exception
         });
-        tweetService.likeTweet(secondUser.getId(), tweet.getId());
+        tweetService.likeTweet(dto, secondUser.getId());
         Tweet entityFromBase = tweetService.getById(tweet.getId());
         assertNotNull(entityFromBase.getId());
         assertEquals(entityFromBase.getUserAccount().getId(), firstUser.getId());
         assertEquals(entityFromBase.getLikesCount(), 1);
-        assertEquals(entityFromBase.getLikesList().get(0).getUser().getId(), secondUser.getId());
+        List<Like> likesList = likeService.getAllByTweetId(entityFromBase.getId());
+        assertEquals(likesList.get(0).getUser().getId(), secondUser.getId());
 
-        tweetService.likeTweet(secondUser.getId(), tweet.getId());
+        tweetService.likeTweet(dto,secondUser.getId());
         entityFromBase = tweetService.getById(tweet.getId());
         assertEquals(entityFromBase.getLikesCount(), 0);
         assertEquals(entityFromBase.getLikesList().size(), 0);

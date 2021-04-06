@@ -1,6 +1,7 @@
 package devinc.dwitter.controller;
 
 import devinc.dwitter.entity.dto.TweetDto;
+import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,6 @@ import java.util.UUID;
 public class TweetController {
     private final TweetService tweetService;
 
-
     @PostMapping("/user/tweets")
     public ResponseEntity<TweetDto> createTweet(@RequestBody TweetDto dto, ServletRequest servletRequest) {
         HttpHeaders headers = new HttpHeaders();
@@ -28,5 +28,18 @@ public class TweetController {
     public ResponseEntity<TweetDto> getTweet(@PathVariable("id") UUID id) {
         TweetDto dto = tweetService.getTweetDtoById(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PutMapping("/user/tweets")
+    public ResponseEntity<TweetLikeDto> likeTweet(@RequestBody TweetLikeDto dto, ServletRequest servletRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        tweetService.likeTweetWithToken(dto, servletRequest);
+        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/tweets/{id}")
+    public ResponseEntity<TweetDto> deleteTweet(@PathVariable("id") UUID id, ServletRequest servletRequest) {
+        tweetService.deleteTweetWithToken(id, servletRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

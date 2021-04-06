@@ -1,9 +1,11 @@
 package devinc.dwitter.service.impl;
 
 import devinc.dwitter.entity.User;
+import devinc.dwitter.entity.dto.UserDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.PasswordIncorrectException;
 import devinc.dwitter.repository.UserRepository;
+import devinc.dwitter.service.AuthService;
 import devinc.dwitter.service.RoleService;
 import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +14,8 @@ import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
     @Override
     public User getById(UUID id) {
@@ -91,6 +94,13 @@ public class UserServiceImpl implements UserService {
             return user;
         }
         throw new PasswordIncorrectException("wrong password");
+    }
+
+    @Override
+    public void subscribeWithToken(UserDto dto, ServletRequest servletRequest) {
+        User subscriber = authService.getUserFromToken(servletRequest);
+        addToSubscribersList(dto.getId(),subscriber.getId());
+
     }
 
     @Override

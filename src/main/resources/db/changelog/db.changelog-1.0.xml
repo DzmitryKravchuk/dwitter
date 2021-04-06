@@ -107,7 +107,7 @@
             </column>
         </createTable>
 
-        <createTable tableName="like">
+        <createTable tableName="like_tweet">
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

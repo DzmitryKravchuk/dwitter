@@ -14,6 +14,5 @@ public class TweetDto {
     private String content;
 
     private UUID repostedTweetId;
-
     private String topic;
 }

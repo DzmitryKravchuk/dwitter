@@ -46,5 +46,10 @@ public class LikeServiceImpl implements LikeService {
     public void delete(UUID id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public List<Like> getAllByTweetId(UUID tweetId) {
+        return repository.getAllByTweetId(tweetId);
+    }
 }
 

@@ -30,7 +30,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         u.setName(registrationRequest.getName());
         userService.saveUser(u);
 
-        UserDto uDto = new UserDto(u.getLogin(), u.getId());
+        UserDto uDto = new UserDto(u.getId());
         return uDto;
     }
 
