@@ -3,6 +3,7 @@ package devinc.dwitter.controller;
 import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.entity.dto.UserDto;
+import devinc.dwitter.service.SubscriptionService;
 import devinc.dwitter.service.TweetService;
 import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,12 @@ import java.util.UUID;
 public class UserController {
     private final TweetService tweetService;
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @PutMapping("/user/users") // подписаться на юзера
     public ResponseEntity<UserDto> subscribe(@RequestBody UserDto dto, ServletRequest servletRequest) {
         HttpHeaders headers = new HttpHeaders();
-        userService.subscribeWithToken(dto, servletRequest);
+        subscriptionService.subscribeWithToken(dto, servletRequest);
         return new ResponseEntity<>(dto, headers, HttpStatus.OK);
     }
 

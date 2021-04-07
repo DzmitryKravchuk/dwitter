@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "user_account")
@@ -31,13 +30,8 @@ public class User extends AbstractEntity {
     @Column(name = "is_active")
     private boolean isActive;
 
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "subscriber_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> usersSubscribedToList;
-
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_subscriber", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private Set<User> subscribersList;
+    @OneToMany(mappedBy = "userAccount", fetch = FetchType.LAZY)
+    private List<Subscription> subscriptionsList;
 
     @Override
     public String toString() {

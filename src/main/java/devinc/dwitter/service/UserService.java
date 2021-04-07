@@ -18,13 +18,5 @@ public interface UserService {
 
     List<User> getByUserName(String name);
 
-    void addToSubscribersList(UUID userId, UUID subscriberId);
 
-    void removeFromSubscribersList(UUID userId, UUID subscriberId);
-
-    User findByLogin(String login);
-
-    User findByLoginAndPassword(String login, String password);
-
-    void subscribeWithToken(UserDto dto, ServletRequest servletRequest);
 }

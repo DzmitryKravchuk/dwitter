@@ -1,9 +1,6 @@
 package devinc.dwitter.service.impl;
 
-import devinc.dwitter.entity.Like;
-import devinc.dwitter.entity.Topic;
-import devinc.dwitter.entity.Tweet;
-import devinc.dwitter.entity.User;
+import devinc.dwitter.entity.*;
 import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
@@ -28,6 +25,7 @@ public class TweetServiceImpl implements TweetService {
     private final LikeService likeService;
     private final AuthService authService;
     private final TweetDtoConverter tweetDtoConverter;
+    private final SubscriptionService subscriptionService;
 
     @Override
     public Tweet getById(UUID id) {
@@ -62,7 +60,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public void delete(UUID id) {
         List<Tweet> reposts = getAllReposts(id);
-        reposts.stream().forEach(t -> repository.delete(t));
+        reposts.forEach(repository::delete);
         if (likeService.getAllByTweetId(id) != null) {
             likeService.getAllByTweetId(id).forEach(l -> likeService.delete(l.getId()));
         }
@@ -171,18 +169,20 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<Tweet> getAllTweetsOfUsersSubscribedToList(UUID subscriberId) {
+    public List<Tweet> getTweetFeed(UUID subscriberId) {
         User subscriber = userService.getById(subscriberId);
-        if (subscriber.getUsersSubscribedToList() == null) {
+        List<Subscription> subscriptionList = subscriptionService.getUserSubscriptions(subscriber);
+
+        if (subscriptionList == null) {
             throw new ObjectNotFoundException(User.class.getName() + " " + subscriber.getName() + "is not subscribed to anyone");
         }
-        Set<User> usersSubscribedToList = subscriber.getUsersSubscribedToList();
-        List<Tweet> allTweetsOfUsersSubscribedToList = new ArrayList<>();
-        for (User user : usersSubscribedToList) {
-            allTweetsOfUsersSubscribedToList.addAll(user.getTweetList());
+
+        List<Tweet> tweetFeed = new ArrayList<>();
+       for (Subscription sub : subscriptionList) {
+           tweetFeed.addAll(sub.getUserAccount().getTweetList());
         }
-        allTweetsOfUsersSubscribedToList.sort(Comparator.comparing(Tweet::getUpdated).reversed());
-        return allTweetsOfUsersSubscribedToList;
+        tweetFeed.sort(Comparator.comparing(Tweet::getUpdated).reversed());
+       return tweetFeed;
     }
 
     @Override

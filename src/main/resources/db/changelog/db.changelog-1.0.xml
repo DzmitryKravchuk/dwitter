@@ -89,11 +89,11 @@
             </column>
         </createTable>
 
-        <createTable tableName="user_subscriber">
-            <column name="user_subscriber_id" type="UUID">
+        <createTable tableName="subscription">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_id" type="UUID">
+            <column name="user_account_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_user_user" references="user_account(id)"/>
             </column>
             <column name="subscriber_id" type="UUID">

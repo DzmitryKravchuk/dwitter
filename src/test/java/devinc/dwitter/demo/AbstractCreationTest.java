@@ -13,20 +13,21 @@ import java.util.*;
 @SpringBootTest
 public class AbstractCreationTest {
     protected static final Random RANDOM = new Random();
-
     protected final RoleService roleService;
     protected final UserService userService;
     protected final LikeService likeService;
     protected final TopicService topicService;
     protected final TweetService tweetService;
+    protected final SubscriptionService subscriptionService;
 
     @Autowired
-    public AbstractCreationTest(RoleService roleService, UserService userService, LikeService likeService, TopicService topicService, TweetService tweetService) {
+    public AbstractCreationTest(RoleService roleService, UserService userService, LikeService likeService, TopicService topicService, TweetService tweetService, SubscriptionService subscriptionService) {
         this.roleService = roleService;
         this.userService = userService;
         this.likeService = likeService;
         this.topicService = topicService;
         this.tweetService = tweetService;
+        this.subscriptionService = subscriptionService;
     }
 
     protected Integer getRandomInt() {

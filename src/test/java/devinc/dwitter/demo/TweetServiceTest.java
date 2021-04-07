@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TweetServiceTest extends AbstractCreationTest {
     @Autowired
-    public TweetServiceTest(RoleService roleService, UserService userService, LikeService likeService, TopicService topicService, TweetService tweetService) {
-        super(roleService, userService, likeService, topicService, tweetService);
+    public TweetServiceTest(RoleService roleService, UserService userService, LikeService likeService, TopicService topicService, TweetService tweetService, SubscriptionService subscriptionService) {
+        super(roleService, userService, likeService, topicService, tweetService, subscriptionService);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         assertEquals(entityFromBase.getTopic().getTopic(), topic.getTopic());
 
         final User userFromBase = userService.getById(user.getId());
-        assertEquals(userFromBase.getTweetList().size(),1);
+        assertEquals(userFromBase.getTweetList().size(), 1);
 
         tweetService.delete(tweet.getId());
         topicService.delete(topic.getId());
@@ -52,7 +52,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         Tweet tweet = createNewTweet(firstUser, "Hello world!!!", null, null);
         TweetLikeDto dto = new TweetLikeDto(tweet.getId());
         assertThrows(OperationForbiddenException.class, () -> {
-            tweetService.likeTweet(dto,firstUser.getId()); // throws exception
+            tweetService.likeTweet(dto, firstUser.getId()); // throws exception
         });
         tweetService.likeTweet(dto, secondUser.getId());
         Tweet entityFromBase = tweetService.getById(tweet.getId());
@@ -62,7 +62,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         List<Like> likesList = likeService.getAllByTweetId(entityFromBase.getId());
         assertEquals(likesList.get(0).getUser().getId(), secondUser.getId());
 
-        tweetService.likeTweet(dto,secondUser.getId());
+        tweetService.likeTweet(dto, secondUser.getId());
         entityFromBase = tweetService.getById(tweet.getId());
         assertEquals(entityFromBase.getLikesCount(), 0);
         assertEquals(entityFromBase.getLikesList().size(), 0);
@@ -83,6 +83,7 @@ public class TweetServiceTest extends AbstractCreationTest {
             tweetService.getById(tweet2.getId());
         });
     }
+
     @Test
     public void repostTweetNoComment() {
         final User firstUser = createNewUser();
@@ -105,10 +106,11 @@ public class TweetServiceTest extends AbstractCreationTest {
         List<Tweet> getAllReposts = tweetService.getAllReposts(tweet1.getId());
         assertEquals(getAllReposts.size(), 2);
     }
+
     @Test
     public void getAllTweetsOfTopic() {
         final User firstUser = createNewUser();
-        final String topic="New topic";
+        final String topic = "New topic";
         Tweet tweet1 = createNewTweet(firstUser, "Hello world!!!", topic, null);
         Tweet tweet2 = createNewTweet(firstUser, "One more time", topic, null);
         final Topic tFromBase = topicService.findByTopicOrCreate(topic);
@@ -125,10 +127,10 @@ public class TweetServiceTest extends AbstractCreationTest {
         Tweet tweet2 = createNewTweet(secondUser, "One more time", null, null);
         TimeUnit.SECONDS.sleep(1);
         Tweet tweet3 = createNewTweet(firstUser, "comment", null, tweet2);
-        userService.addToSubscribersList(firstUser.getId(),subscriber.getId());
-        userService.addToSubscribersList(secondUser.getId(),subscriber.getId());
-        List<Tweet> allTweetsOfUsersSubscribedToList = tweetService.getAllTweetsOfUsersSubscribedToList(subscriber.getId());
-        assertEquals(allTweetsOfUsersSubscribedToList.size(), 3);
-        assertEquals(allTweetsOfUsersSubscribedToList.get(0).getId(), tweet3.getId());
+        subscriptionService.refreshSubscription(firstUser.getId(), subscriber.getId());
+        subscriptionService.refreshSubscription(secondUser.getId(), subscriber.getId());
+        List<Tweet> tweetFeed = tweetService.getTweetFeed(subscriber.getId());
+        assertEquals(tweetFeed.size(), 3);
+        assertEquals(tweetFeed.get(0).getId(), tweet3.getId());
     }
 }

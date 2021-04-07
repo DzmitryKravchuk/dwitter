@@ -3,6 +3,7 @@ package devinc.dwitter.service.impl;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.AuthRequest;
 import devinc.dwitter.entity.dto.AuthResponse;
+import devinc.dwitter.security.CustomUserDetailsService;
 import devinc.dwitter.security.jvt.JwtFilter;
 import devinc.dwitter.security.jvt.JwtProvider;
 import devinc.dwitter.service.AuthService;
@@ -18,12 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final JwtFilter jwtFilter;
-    private final UserService userService;
-
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     public AuthResponse auth(AuthRequest request) {
-        User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+        User user = customUserDetailsService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         String token = jwtProvider.generateToken(user.getLogin());
         return new AuthResponse(token);
     }
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         User user = null;
         if (token != null && jwtProvider.validateToken(token)) {
             String userLogin = jwtProvider.getLoginFromToken(token);
-            user = userService.findByLogin(userLogin);
+            user = customUserDetailsService.findByLogin(userLogin);
         }
         return user;
     }
