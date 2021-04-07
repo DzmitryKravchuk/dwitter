@@ -13,4 +13,7 @@ public interface TweetRepository extends JpaRepository<Tweet, UUID> {
 
     @Query(value = "select * from tweet where tweet.topic_id=?1", nativeQuery = true)
     List<Tweet> getAllTweetsOfTopic(UUID topicId);
+
+    @Query(value = "select * from tweet where tweet.user_account_id=?1", nativeQuery = true)
+    List<Tweet> findTweetsByUserId(UUID id);
 }

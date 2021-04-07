@@ -38,7 +38,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         assertEquals(entityFromBase.getTopic().getTopic(), topic.getTopic());
 
         final User userFromBase = userService.getById(user.getId());
-        assertEquals(userFromBase.getTweetList().size(), 1);
+        assertEquals(tweetService.getTweetListByUserId(userFromBase.getId()).size(), 1);
 
         tweetService.delete(tweet.getId());
         topicService.delete(topic.getId());

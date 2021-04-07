@@ -25,6 +25,8 @@ public interface TweetService {
 
     List<Tweet> getAllTweetsOfTopic(UUID topicId);
 
+    List<Tweet> getTweetListByUserId(UUID id);
+
     List<Tweet> getTweetFeed(UUID subscriberId);
 
     void createTweetWithToken(TweetDto dto, ServletRequest servletRequest);

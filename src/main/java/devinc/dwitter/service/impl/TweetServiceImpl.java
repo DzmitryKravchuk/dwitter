@@ -75,17 +75,8 @@ public class TweetServiceImpl implements TweetService {
         checkIsRepost(tweetDto.getContent(), tweetDto.getRepostedTweetId(), entity);
         checkHasTopic(tweetDto.getTopic(), entity);
         save(entity);
-        addToTweetList(entity, user);
-        return entity;
-    }
 
-    private void addToTweetList(Tweet entity, User user) {
-        if (user.getTweetList() == null) {
-            List<Tweet> tweetList = new ArrayList<>();
-            user.setTweetList(tweetList);
-        }
-        user.getTweetList().add(entity);
-        userService.saveUser(user);
+        return entity;
     }
 
     private void checkHasTopic(String topic, Tweet entity) {
@@ -179,10 +170,15 @@ public class TweetServiceImpl implements TweetService {
 
         List<Tweet> tweetFeed = new ArrayList<>();
        for (Subscription sub : subscriptionList) {
-           tweetFeed.addAll(sub.getUserAccount().getTweetList());
+           tweetFeed.addAll(getTweetListByUserId(sub.getUserAccount().getId()));
         }
         tweetFeed.sort(Comparator.comparing(Tweet::getUpdated).reversed());
        return tweetFeed;
+    }
+
+    @Override
+    public List<Tweet> getTweetListByUserId(UUID id) {
+       return repository.findTweetsByUserId (id);
     }
 
     @Override
