@@ -18,5 +18,5 @@ public interface UserService {
 
     List<User> getByUserName(String name);
 
-
+    void deleteUserWithToken(UUID id, ServletRequest servletRequest);
 }

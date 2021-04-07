@@ -9,5 +9,8 @@ import java.util.UUID;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, UUID> {
     @Query(value = "select * from subscription where subscriber_id=?1", nativeQuery = true)
-    List<Subscription> findUsersSubscribedTo(UUID id);
+    List<Subscription> findUsersBySubscriberId(UUID id);
+
+    @Query(value = "select * from subscription where user_account_id=?1", nativeQuery = true)
+    List<Subscription> findSubscribersByUserId(UUID id);
 }

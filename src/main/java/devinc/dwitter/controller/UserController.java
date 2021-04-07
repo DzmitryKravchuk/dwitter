@@ -1,5 +1,6 @@
 package devinc.dwitter.controller;
 
+import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.entity.dto.UserDto;
@@ -31,14 +32,14 @@ public class UserController {
     }
 
     @GetMapping("/user/users/{userName}") // поиск юзера по никнейму
-    public ResponseEntity<List<TweetDto>> getTweet(@PathVariable("userName") String userName) {
-        List<TweetDto> dtoList = null;
+    public ResponseEntity<List<User>> getTweet(@PathVariable("userName") String userName) {
+        List<User> dtoList = userService.getByUserName(userName);
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @DeleteMapping("/user/users/{id}") // юзер удаляет свой аккаунт
     public ResponseEntity<UserDto> deleteUser(@PathVariable("id") UUID id, ServletRequest servletRequest) {
-
+        userService.deleteUserWithToken(id, servletRequest);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

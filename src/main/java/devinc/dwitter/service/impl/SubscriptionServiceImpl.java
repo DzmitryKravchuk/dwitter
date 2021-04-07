@@ -63,16 +63,27 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public List<Subscription> getUserSubscriptions(User subscriber) {
         List<Subscription> subscriptions;
-        if (repository.findUsersSubscribedTo(subscriber.getId()) == null) {
+        if (repository.findUsersBySubscriberId(subscriber.getId()) == null) {
             subscriptions = new ArrayList<>();
         } else {
-            subscriptions = repository.findUsersSubscribedTo(subscriber.getId());
+            subscriptions = repository.findUsersBySubscriberId(subscriber.getId());
         }
         return subscriptions;
     }
 
     @Override
-    public void subscribeWithToken(UserDto dto, ServletRequest servletRequest) {
+    public List<Subscription> getSubscribers(User user){
+        List<Subscription> subscribers;
+        if (repository.findSubscribersByUserId(user.getId())==null){
+            subscribers = new ArrayList<>();
+        }else {
+            subscribers = repository.findSubscribersByUserId(user.getId());
+        }
+        return  subscribers;
+    }
 
+    @Override
+    public void subscribeWithToken(UserDto dto, ServletRequest servletRequest) {
+        refreshSubscription(dto.getId(), authService.getUserFromToken(servletRequest).getId());
     }
 }

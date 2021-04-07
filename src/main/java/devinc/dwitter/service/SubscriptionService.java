@@ -14,5 +14,7 @@ public interface SubscriptionService {
 
     List<Subscription> getUserSubscriptions(User subscriber);
 
+    List<Subscription> getSubscribers(User user);
+
     void subscribeWithToken(UserDto dto, ServletRequest servletRequest);
 }

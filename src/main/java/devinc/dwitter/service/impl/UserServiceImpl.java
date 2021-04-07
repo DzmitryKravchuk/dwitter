@@ -1,17 +1,19 @@
 package devinc.dwitter.service.impl;
 
+import devinc.dwitter.entity.Subscription;
+import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
+import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.UserRepository;
-import devinc.dwitter.service.AuthService;
-import devinc.dwitter.service.RoleService;
-import devinc.dwitter.service.UserService;
+import devinc.dwitter.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletRequest;
 import java.util.*;
 
 @Service
@@ -22,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
+//    private final TweetService tweetService;
+//    private final SubscriptionService subscriptionService;
 
     @Override
     public User getById(UUID id) {
@@ -61,6 +65,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(UUID id) {
+ //       List <Tweet> tweetList=tweetService.getTweetListByUserId(id);
+ //       tweetList.forEach(t->tweetService.delete(t.getId()));
+
+ //       List <Subscription> subscriptionList =subscriptionService.getUserSubscriptions()
+
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteUserWithToken(UUID id, ServletRequest servletRequest) {
+        User user = authService.getUserFromToken(servletRequest);
+        if (user.getId().equals(id)) {
+            delete(id);
+        } else throw new OperationForbiddenException("You can't delete other users");
+    }
+
 }
