@@ -18,13 +18,13 @@ public class Tweet extends AbstractEntity {
     @Column(name = "likes")
     private int likesCount;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     private User userAccount;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Topic.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Topic.class)
     private Topic topic;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Tweet.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Tweet.class)
     private Tweet repostedTweet;
 
     @OneToMany(mappedBy = "tweet", fetch = FetchType.LAZY)

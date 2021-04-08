@@ -20,9 +20,35 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    private final TweetService tweetService;
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final TweetService tweetService;
+
+    @GetMapping("/user/tweetFeed")
+    public ResponseEntity<List<TweetDto>> getTweetFeedByUserId(ServletRequest servletRequest) {
+        List<TweetDto> tweetList = tweetService.getTweetFeedDtoWithToken(servletRequest);
+        return new ResponseEntity<>(tweetList, HttpStatus.OK);
+    }
+
+    @PostMapping("/user/tweets")
+    public ResponseEntity<TweetDto> createTweet(@RequestBody TweetDto dto, ServletRequest servletRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        tweetService.createTweetWithToken(dto, servletRequest);
+        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+    }
+
+    @PutMapping("/user/tweets")
+    public ResponseEntity<TweetLikeDto> likeTweet(@RequestBody TweetLikeDto dto, ServletRequest servletRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        tweetService.likeTweetWithToken(dto, servletRequest);
+        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/tweets/{id}")
+    public ResponseEntity<TweetDto> deleteTweet(@PathVariable("id") UUID id, ServletRequest servletRequest) {
+        tweetService.deleteTweetWithToken(id, servletRequest);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
     @PutMapping("/user/users") // подписаться на юзера
     public ResponseEntity<UserDto> subscribe(@RequestBody UserDto dto, ServletRequest servletRequest) {
@@ -32,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/user/users/{userName}") // поиск юзера по никнейму
-    public ResponseEntity<List<User>> getTweet(@PathVariable("userName") String userName) {
+    public ResponseEntity<List<User>> getUserByNick(@PathVariable("userName") String userName) {
         List<User> dtoList = userService.getByUserName(userName);
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }

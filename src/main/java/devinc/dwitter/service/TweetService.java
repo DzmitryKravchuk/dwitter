@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface TweetService {
     Tweet getById(UUID id);
 
+    TweetDto getTweetDtoById(UUID id);
+
     void save(Tweet entity);
 
     List<Tweet> getAll();
@@ -31,9 +33,15 @@ public interface TweetService {
 
     void createTweetWithToken(TweetDto dto, ServletRequest servletRequest);
 
-    TweetDto getTweetDtoById(UUID id);
-
     void likeTweetWithToken(TweetLikeDto dto, ServletRequest servletRequest);
 
     void deleteTweetWithToken(UUID id, ServletRequest servletRequest);
+
+    void deleteTweetByModerator(UUID id, ServletRequest servletRequest);
+
+    List<TweetDto> getTweetDtoListByUserId(UUID id);
+
+    List<TweetDto> getAllRepostsDto(UUID id);
+
+    List<TweetDto> getTweetFeedDtoWithToken(ServletRequest servletRequest);
 }

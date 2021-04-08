@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -155,6 +156,12 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
+    public List<TweetDto> getAllRepostsDto(UUID id) {
+        List<Tweet> tweetList = getAllReposts(id);
+        return tweetList.stream().map(tweetDtoConverter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Tweet> getAllTweetsOfTopic(UUID topicId) {
         return repository.getAllTweetsOfTopic(topicId);
     }
@@ -173,8 +180,20 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
+    public List<TweetDto> getTweetFeedDtoWithToken(ServletRequest servletRequest) {
+        List<Tweet> tweetList = getTweetFeed(authService.getUserFromToken(servletRequest).getId());
+        return tweetList.stream().map(tweetDtoConverter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Tweet> getTweetListByUserId(UUID id) {
        return repository.findTweetsByUserId (id);
+    }
+
+    @Override
+    public List<TweetDto> getTweetDtoListByUserId(UUID id) {
+        List<Tweet> tweetList = getTweetListByUserId(id);
+        return tweetList.stream().map(tweetDtoConverter::convertToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -196,5 +215,12 @@ public class TweetServiceImpl implements TweetService {
         }
         delete(id);
     }
+
+    @Override
+    public void deleteTweetByModerator(UUID id, ServletRequest servletRequest) {
+        delete(id);
+    }
+
+
 }
 

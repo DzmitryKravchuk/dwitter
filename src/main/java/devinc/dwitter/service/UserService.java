@@ -1,7 +1,6 @@
 package devinc.dwitter.service;
 
 import devinc.dwitter.entity.User;
-import devinc.dwitter.entity.dto.UserDto;
 
 import javax.servlet.ServletRequest;
 import java.util.List;
@@ -12,6 +11,8 @@ public interface UserService {
 
     void saveUser(User entity);
 
+    void saveModerator(User entity);
+
     List<User> getAll();
 
     void delete(UUID id);
@@ -19,4 +20,6 @@ public interface UserService {
     List<User> getByUserName(String name);
 
     void deleteUserWithToken(UUID id, ServletRequest servletRequest);
+
+    void deleteUserByModerator(UUID id, ServletRequest servletRequest);
 }

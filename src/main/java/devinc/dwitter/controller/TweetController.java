@@ -1,15 +1,13 @@
 package devinc.dwitter.controller;
 
 import devinc.dwitter.entity.dto.TweetDto;
-import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletRequest;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,29 +15,22 @@ import java.util.UUID;
 public class TweetController {
     private final TweetService tweetService;
 
-    @PostMapping("/user/tweets")
-    public ResponseEntity<TweetDto> createTweet(@RequestBody TweetDto dto, ServletRequest servletRequest) {
-        HttpHeaders headers = new HttpHeaders();
-        tweetService.createTweetWithToken(dto, servletRequest);
-        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
-    }
-
-    @GetMapping("/user/tweets/{id}")
+    @GetMapping("/tweets/{id}")
     public ResponseEntity<TweetDto> getTweet(@PathVariable("id") UUID id) {
-        TweetDto dto = tweetService.getTweetDtoById(id);
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        TweetDto tweet = tweetService.getTweetDtoById(id);
+        return new ResponseEntity<>(tweet, HttpStatus.OK);
     }
 
-    @PutMapping("/user/tweets")
-    public ResponseEntity<TweetLikeDto> likeTweet(@RequestBody TweetLikeDto dto, ServletRequest servletRequest) {
-        HttpHeaders headers = new HttpHeaders();
-        tweetService.likeTweetWithToken(dto, servletRequest);
-        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+    @GetMapping("/tweets/reposts/{id}")
+    public ResponseEntity<List<TweetDto>> getRepostsOfTweet(@PathVariable("id") UUID id) {
+        List<TweetDto> tweetList = tweetService.getAllRepostsDto(id);
+        return new ResponseEntity<>(tweetList, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/tweets/{id}")
-    public ResponseEntity<TweetDto> deleteTweet(@PathVariable("id") UUID id, ServletRequest servletRequest) {
-        tweetService.deleteTweetWithToken(id, servletRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @GetMapping("/tweets/user/{id}")
+    public ResponseEntity<List<TweetDto>> getTweetsOfUser(@PathVariable("id") UUID id) {
+        List<TweetDto> tweetList = tweetService.getTweetDtoListByUserId(id);
+        return new ResponseEntity<>(tweetList, HttpStatus.OK);
     }
+
 }

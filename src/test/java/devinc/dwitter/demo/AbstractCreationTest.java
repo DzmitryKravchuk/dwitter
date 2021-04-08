@@ -44,6 +44,16 @@ public class AbstractCreationTest {
         return entity;
     }
 
+    protected User createNewModerator() {
+        final User entity = new User();
+        entity.setName("SuperModerator" + getRandomInt());
+        entity.setActive(true);
+        entity.setLogin(entity.getName() + "@mail.com");
+        entity.setPassword(entity.getName());
+        userService.saveModerator(entity);
+        return entity;
+    }
+
     protected Topic createNewTopic() {
         final Topic entity = new Topic();
         entity.setTopic("newTopic" + getRandomInt());

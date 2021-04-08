@@ -52,7 +52,7 @@
         <insert tableName="user_account">
             <column name="id" value="ff5fc811-f67b-4e22-941c-212a6c61660d"/>
             <column name="login" value="moder1@mail.com"/>
-            <column name="password" value="moder1"/>
+            <column name="password" value="$2a$10$QbDoM1SWUS/TXIYm82Ah9uWHloztDz79qUNdfg57lsyIjFR2I2o.e"/>
             <column name="user_name" value="moder1"/>
             <column name="role_id" value="59f4c678-9fa1-4f23-bdf7-d8cd8dfbfe3e"/>
             <column name="is_active" value="true"/>

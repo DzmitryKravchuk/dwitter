@@ -5,6 +5,5 @@ import devinc.dwitter.entity.dto.UserDto;
 
 public interface RegistrationService {
     UserDto registerUser(RegistrationRequest registrationRequest);
-
-
+    UserDto registerModerator(RegistrationRequest registrationRequest);
 }

@@ -34,6 +34,20 @@ public class RegistrationServiceImpl implements RegistrationService {
         return uDto;
     }
 
+    @Override
+    public UserDto registerModerator(RegistrationRequest registrationRequest) throws NotExistingEMailException,
+            NotUniqueUserLoginException, NotUniqueUserNameException {
+        User u = new User();
+        validate(registrationRequest);
+        u.setPassword(registrationRequest.getPassword());
+        u.setLogin(registrationRequest.getLogin());
+        u.setName(registrationRequest.getName());
+        userService.saveUser(u);
+
+        UserDto uDto = new UserDto(u.getId());
+        return uDto;
+    }
+
     private void validate(RegistrationRequest registrationRequest) {
         final String login = registrationRequest.getLogin();
         final String name = registrationRequest.getName();

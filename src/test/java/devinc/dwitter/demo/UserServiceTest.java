@@ -18,8 +18,17 @@ public class UserServiceTest extends AbstractCreationTest {
     }
 
     @Test
-    public void createTest() {
+    public void createUserTest() {
         final User firstUser = createNewUser();
+        User entityFromBase = userService.getById(firstUser.getId());
+        assertNotNull(entityFromBase.getId());
+        assertEquals(firstUser.getName(), entityFromBase.getName());
+        userService.delete(firstUser.getId());
+    }
+
+    @Test
+    public void createModeratorTest() {
+        final User firstUser = createNewModerator();
         User entityFromBase = userService.getById(firstUser.getId());
         assertNotNull(entityFromBase.getId());
         assertEquals(firstUser.getName(), entityFromBase.getName());

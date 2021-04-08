@@ -61,6 +61,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void saveModerator(User entity) {
+        Date currentDate = new Date();
+        entity.setUpdated(currentDate);
+        if (entity.getId() == null) {
+            entity.setCreated(currentDate);
+            entity.setRole(roleService.getByRoleName("ROLE_MODERATOR"));
+            entity.setActive(true);
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
+        repository.save(entity);
+    }
+
+    @Override
     public List<User> getAll() {
         return repository.findAll();
     }
@@ -86,6 +99,11 @@ public class UserServiceImpl implements UserService {
         if (user.getId().equals(id)) {
             delete(id);
         } else throw new OperationForbiddenException("You can't delete other users");
+    }
+
+    @Override
+    public void deleteUserByModerator(UUID id, ServletRequest servletRequest) {
+        delete(id);
     }
 
 }
