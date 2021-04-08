@@ -132,5 +132,7 @@ public class TweetServiceTest extends AbstractCreationTest {
         List<Tweet> tweetFeed = tweetService.getTweetFeed(subscriber.getId());
         assertEquals(tweetFeed.size(), 3);
         assertEquals(tweetFeed.get(0).getId(), tweet3.getId());
+        userService.delete(firstUser.getId());
+        userService.delete(subscriber.getId());
     }
 }

@@ -164,10 +164,6 @@ public class TweetServiceImpl implements TweetService {
         User subscriber = userService.getById(subscriberId);
         List<Subscription> subscriptionList = subscriptionService.getUserSubscriptions(subscriber);
 
-        if (subscriptionList == null) {
-            throw new ObjectNotFoundException(User.class.getName() + " " + subscriber.getName() + "is not subscribed to anyone");
-        }
-
         List<Tweet> tweetFeed = new ArrayList<>();
        for (Subscription sub : subscriptionList) {
            tweetFeed.addAll(getTweetListByUserId(sub.getUserAccount().getId()));

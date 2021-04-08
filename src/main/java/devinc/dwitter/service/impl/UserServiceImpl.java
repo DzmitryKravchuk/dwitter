@@ -5,6 +5,8 @@ import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
+import devinc.dwitter.repository.SubscriptionRepository;
+import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.repository.UserRepository;
 import devinc.dwitter.service.*;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,8 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
-//    private final TweetService tweetService;
-//    private final SubscriptionService subscriptionService;
+    private final TweetRepository tweetRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
     @Override
     public User getById(UUID id) {
@@ -65,10 +67,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(UUID id) {
- //       List <Tweet> tweetList=tweetService.getTweetListByUserId(id);
- //       tweetList.forEach(t->tweetService.delete(t.getId()));
+        List<Tweet> tweetList = tweetRepository.findTweetsByUserId(id);
+        if (!tweetList.isEmpty()) {
+            tweetList.forEach(tweetRepository::delete);
+        }
 
- //       List <Subscription> subscriptionList =subscriptionService.getUserSubscriptions()
+        List<Subscription> subscriptionList = subscriptionRepository.findSubscribersByUserId(id);
+        if (!subscriptionList.isEmpty()) {
+            subscriptionList.forEach(subscriptionRepository::delete);
+        }
 
         repository.deleteById(id);
     }

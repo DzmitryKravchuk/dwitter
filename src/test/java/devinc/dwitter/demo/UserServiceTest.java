@@ -45,5 +45,6 @@ public class UserServiceTest extends AbstractCreationTest {
         assertEquals(subscriptionList.size(), 1);
         List <Subscription> subscribersList = subscriptionService.getSubscribers(firstUser);
         assertEquals(subscribersList.size(), 1);
+        userService.delete(secondUser.getId());
     }
 }
