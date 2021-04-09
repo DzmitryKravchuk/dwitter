@@ -45,8 +45,8 @@
             <column name="content" value="I'm fond of codding!"/>
             <column name="likes" value="0"/>
             <column name="user_account_id" value="fd12a0d9-0f25-491f-91e7-6945f1fe4278"/>
-            <column name="created" value="2021-03-22 16:44:04.100"/>
-            <column name="updated" value="2021-03-22 16:44:04.100"/>
+            <column name="created" value="2021-03-23 16:44:04.100"/>
+            <column name="updated" value="2021-03-23 16:44:04.100"/>
         </insert>
 
         <insert tableName="tweet">
@@ -55,8 +55,8 @@
             <column name="likes" value="0"/>
             <column name="user_account_id" value="1e0751b0-04bf-43ab-980a-9fd6657d5ee4"/>
             <column name="reposted_tweet_id" value="6a6ee052-7444-4947-b078-98237c785f2b"/>
-            <column name="created" value="2021-03-22 16:44:04.100"/>
-            <column name="updated" value="2021-03-22 16:44:04.100"/>
+            <column name="created" value="2021-03-24 16:44:04.100"/>
+            <column name="updated" value="2021-03-24 16:44:04.100"/>
         </insert>
 
         <insert tableName="tweet">
@@ -65,8 +65,8 @@
             <column name="likes" value="0"/>
             <column name="user_account_id" value="8cb9e91e-08df-4499-9be1-b4a2a4930ec0"/>
             <column name="reposted_tweet_id" value="6a6ee052-7444-4947-b078-98237c785f2b"/>
-            <column name="created" value="2021-03-22 16:44:04.100"/>
-            <column name="updated" value="2021-03-22 16:44:04.100"/>
+            <column name="created" value="2021-03-22 16:44:04.200"/>
+            <column name="updated" value="2021-03-22 16:44:04.200"/>
         </insert>
 
     </changeSet>

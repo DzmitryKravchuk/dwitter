@@ -32,5 +32,4 @@ public class TweetController {
         List<TweetDto> tweetList = tweetService.getTweetDtoListByUserId(id);
         return new ResponseEntity<>(tweetList, HttpStatus.OK);
     }
-
 }
