@@ -8,9 +8,6 @@ import devinc.dwitter.service.SubscriptionService;
 import devinc.dwitter.service.TweetService;
 import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletRequest;
@@ -25,47 +22,40 @@ public class UserController {
     private final TweetService tweetService;
 
     @GetMapping("/user/tweetFeed")
-    public ResponseEntity<List<TweetDto>> getTweetFeedByUserId(ServletRequest servletRequest) {
-        List<TweetDto> tweetList = tweetService.getTweetFeedDtoWithToken(servletRequest);
-        return new ResponseEntity<>(tweetList, HttpStatus.OK);
+    public List<TweetDto> getTweetFeedByUserId(ServletRequest servletRequest) {
+        return tweetService.getTweetFeedDtoWithToken(servletRequest);
     }
 
     @PostMapping("/user/tweets")
-    public ResponseEntity<TweetDto> createTweet(@RequestBody TweetDto dto, ServletRequest servletRequest) {
-        HttpHeaders headers = new HttpHeaders();
+    public TweetDto createTweet(@RequestBody TweetDto dto, ServletRequest servletRequest) {
         tweetService.createTweetWithToken(dto, servletRequest);
-        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+        return dto;
     }
 
     @PutMapping("/user/tweets")
-    public ResponseEntity<TweetLikeDto> likeTweet(@RequestBody TweetLikeDto dto, ServletRequest servletRequest) {
-        HttpHeaders headers = new HttpHeaders();
+    public TweetLikeDto likeTweet(@RequestBody TweetLikeDto dto, ServletRequest servletRequest) {
         tweetService.likeTweetWithToken(dto, servletRequest);
-        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+        return dto;
     }
 
     @DeleteMapping("/user/tweets/{id}")
-    public ResponseEntity<TweetDto> deleteTweet(@PathVariable("id") UUID id, ServletRequest servletRequest) {
+    public void deleteTweet(@PathVariable("id") UUID id, ServletRequest servletRequest) {
         tweetService.deleteTweetWithToken(id, servletRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/user/users") // подписаться на юзера
-    public ResponseEntity<UserDto> subscribe(@RequestBody UserDto dto, ServletRequest servletRequest) {
-        HttpHeaders headers = new HttpHeaders();
+    public UserDto subscribe(@RequestBody UserDto dto, ServletRequest servletRequest) {
         subscriptionService.subscribeWithToken(dto, servletRequest);
-        return new ResponseEntity<>(dto, headers, HttpStatus.OK);
+        return dto;
     }
 
-    @GetMapping("/user/users/{userName}") // поиск юзера по никнейму
-    public ResponseEntity<List<User>> getUserByNick(@PathVariable("userName") String userName) {
-        List<User> dtoList = userService.getByUserName(userName);
-        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    @GetMapping("/user/users/{userName}") // поиск юзера по нику
+    public List<User> getUserByNick(@PathVariable("userName") String userName) {
+        return userService.getByUserName(userName);
     }
 
     @DeleteMapping("/user/users/{id}") // юзер удаляет свой аккаунт
-    public ResponseEntity<UserDto> deleteUser(@PathVariable("id") UUID id, ServletRequest servletRequest) {
+    public void deleteUser(@PathVariable("id") UUID id, ServletRequest servletRequest) {
         userService.deleteUserWithToken(id, servletRequest);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
