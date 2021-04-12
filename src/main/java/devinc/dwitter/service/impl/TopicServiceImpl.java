@@ -23,18 +23,15 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic getById(UUID id) {
-        Topic entity = repository.findById(id).orElse(null);
-        if (entity == null) {
-            throw new ObjectNotFoundException(Topic.class.getName() + " object with index " + id + " not found");
-        }
-        return entity;
+        return repository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException(Topic.class.getName() + " object with index " + id + " not found"));
     }
 
     @Override
     public Topic findByTopicOrCreate(String topic) {
         Topic tFromBase = repository.findByTopic(topic);
-        if (tFromBase==null){
-            tFromBase=new Topic(topic,null);
+        if (tFromBase == null) {
+            tFromBase = new Topic(topic, null);
             save(tFromBase);
         }
         return tFromBase;

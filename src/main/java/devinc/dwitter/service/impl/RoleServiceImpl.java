@@ -21,11 +21,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getById(UUID id) {
-        Role role = repository.findById(id).orElse(null);
-        if (role == null) {
-            throw new ObjectNotFoundException(Role.class.getName() + " object with index " + id + " not found");
-        }
-        return role;
+        return repository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException(Role.class.getName() + " object with index " + id + " not found"));
     }
 
     @Override

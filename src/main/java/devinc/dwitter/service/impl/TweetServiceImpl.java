@@ -30,11 +30,8 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public Tweet getById(UUID id) {
-        Tweet entity = repository.findById(id).orElse(null);
-        if (entity == null) {
-            throw new ObjectNotFoundException(Tweet.class.getName() + " object with index " + id + " not found");
-        }
-        return entity;
+        return repository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException(Tweet.class.getName() + " object with index " + id + " not found"));
     }
 
     @Override
@@ -172,11 +169,11 @@ public class TweetServiceImpl implements TweetService {
         List<Subscription> subscriptionList = subscriptionService.getUserSubscriptions(subscriber);
 
         List<Tweet> tweetFeed = new ArrayList<>();
-       for (Subscription sub : subscriptionList) {
-           tweetFeed.addAll(getTweetListByUserId(sub.getUserAccount().getId()));
+        for (Subscription sub : subscriptionList) {
+            tweetFeed.addAll(getTweetListByUserId(sub.getUserAccount().getId()));
         }
         tweetFeed.sort(Comparator.comparing(Tweet::getUpdated).reversed());
-       return tweetFeed;
+        return tweetFeed;
     }
 
     @Override
@@ -187,7 +184,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<Tweet> getTweetListByUserId(UUID id) {
-       return repository.findTweetsByUserId (id);
+        return repository.findTweetsByUserId(id);
     }
 
     @Override
@@ -220,7 +217,5 @@ public class TweetServiceImpl implements TweetService {
     public void deleteTweetByModerator(UUID id, ServletRequest servletRequest) {
         delete(id);
     }
-
-
 }
 

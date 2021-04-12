@@ -50,9 +50,9 @@ public class UserServiceTest extends AbstractCreationTest {
             subscriptionService.refreshSubscription(firstUser.getId(), firstUser.getId()); // throws exception
         });
         subscriptionService.refreshSubscription(firstUser.getId(), secondUser.getId());
-        List <Subscription> subscriptionList = subscriptionService.getUserSubscriptions(secondUser);
+        List<Subscription> subscriptionList = subscriptionService.getUserSubscriptions(secondUser);
         assertEquals(subscriptionList.size(), 1);
-        List <Subscription> subscribersList = subscriptionService.getSubscribers(firstUser);
+        List<Subscription> subscribersList = subscriptionService.getSubscribers(firstUser);
         assertEquals(subscribersList.size(), 1);
         userService.delete(secondUser.getId());
     }

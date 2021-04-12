@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,20 +32,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(UUID id) {
-        User entity = repository.findById(id).orElse(null);
-        if (entity == null) {
-            throw new ObjectNotFoundException(User.class.getName() + " object with index " + id + " not found");
-        }
-        return entity;
+        return repository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException(User.class.getName() + " object with index " + id + " not found"));
     }
 
     @Override
     public List<User> getByUserName(String name) {
-        List<User> entityList = repository.findAllByNameContainingIgnoreCase(name);
-        if (entityList.isEmpty()) {
+      List<User> entityList = repository.findAllByNameContainingIgnoreCase(name);
+       if (entityList.isEmpty()) {
             throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
-        }
-        return entityList;
+       }
+       return entityList;
     }
 
     @Override

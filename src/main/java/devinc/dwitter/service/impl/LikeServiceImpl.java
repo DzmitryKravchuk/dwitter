@@ -20,11 +20,8 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public Like getById(UUID id) {
-        Like entity = repository.findById(id).orElse(null);
-        if (entity == null) {
-            throw new ObjectNotFoundException(Like.class.getName() + " object with index " + id + " not found");
-        }
-        return entity;
+        return repository.findById(id).
+                orElseThrow(() -> new ObjectNotFoundException(Like.class.getName() + " object with index " + id + " not found"));
     }
 
     @Override
