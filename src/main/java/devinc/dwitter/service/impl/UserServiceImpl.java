@@ -1,23 +1,23 @@
 package devinc.dwitter.service.impl;
 
-import devinc.dwitter.entity.Subscription;
-import devinc.dwitter.entity.Tweet;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.SubscriptionRepository;
 import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.repository.UserRepository;
-import devinc.dwitter.service.*;
+import devinc.dwitter.service.AuthService;
+import devinc.dwitter.service.RoleService;
+import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getByUserName(String name) {
-      List<User> entityList = repository.findAllByNameContainingIgnoreCase(name);
-       if (entityList.isEmpty()) {
+        List<User> entityList = repository.findAllByNameContainingIgnoreCase(name);
+        if (entityList.isEmpty()) {
             throw new ObjectNotFoundException(User.class.getName() + " object with name " + name + " not found");
-       }
-       return entityList;
+        }
+        return entityList;
     }
 
     @Override
@@ -78,16 +78,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(UUID id) {
-        List<Tweet> tweetList = tweetRepository.findTweetsByUserId(id);
-        if (!tweetList.isEmpty()) {
-            tweetList.forEach(tweetRepository::delete);
-        }
-
-        List<Subscription> subscriptionList = subscriptionRepository.findSubscribersByUserId(id);
-        if (!subscriptionList.isEmpty()) {
-            subscriptionList.forEach(subscriptionRepository::delete);
-        }
-
+        tweetRepository.deleteTweetsByUserId(id);
+        subscriptionRepository.deleteSubscriptionByUserId(id);
         repository.deleteById(id);
     }
 

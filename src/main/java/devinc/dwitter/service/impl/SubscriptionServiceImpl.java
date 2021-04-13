@@ -28,10 +28,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (userId == subscriberId) {
             throw new OperationForbiddenException("You can't subscribe to your own account");
         }
-        User subscriber = userService.getById(subscriberId);
-        List<Subscription> subscriptionsList = getUserSubscriptions(subscriber);
 
-        Subscription presentSubscription = presentSubscription(userId, subscriptionsList);
+        Subscription presentSubscription = repository.findSubscriptionByUserIdSubscriberId(userId, subscriberId);
         if (presentSubscription != null) {
             cancelSubscription(presentSubscription);
         } else {

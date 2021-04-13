@@ -1,19 +1,33 @@
 package devinc.dwitter.service.impl;
 
-import devinc.dwitter.entity.*;
+
+import devinc.dwitter.entity.Like;
+import devinc.dwitter.entity.Subscription;
+import devinc.dwitter.entity.Topic;
+import devinc.dwitter.entity.Tweet;
+import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
 import devinc.dwitter.repository.TweetRepository;
-import devinc.dwitter.service.*;
+import devinc.dwitter.service.AuthService;
+import devinc.dwitter.service.LikeService;
+import devinc.dwitter.service.SubscriptionService;
+import devinc.dwitter.service.TopicService;
+import devinc.dwitter.service.TweetService;
+import devinc.dwitter.service.UserService;
 import devinc.dwitter.service.util.TweetDtoConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service

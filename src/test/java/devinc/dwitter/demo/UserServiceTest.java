@@ -3,13 +3,20 @@ package devinc.dwitter.demo;
 import devinc.dwitter.entity.Subscription;
 import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.OperationForbiddenException;
-import devinc.dwitter.service.*;
+import devinc.dwitter.service.LikeService;
+import devinc.dwitter.service.RoleService;
+import devinc.dwitter.service.SubscriptionService;
+import devinc.dwitter.service.TopicService;
+import devinc.dwitter.service.TweetService;
+import devinc.dwitter.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserServiceTest extends AbstractCreationTest {
     @Autowired

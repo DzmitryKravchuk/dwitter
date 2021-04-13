@@ -3,7 +3,9 @@ package devinc.dwitter.controller;
 import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,13 +1,22 @@
 package devinc.dwitter.demo;
 
-import devinc.dwitter.entity.*;
+import devinc.dwitter.entity.Like;
+import devinc.dwitter.entity.Topic;
+import devinc.dwitter.entity.Tweet;
+import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.TweetDto;
-import devinc.dwitter.service.*;
+import devinc.dwitter.service.LikeService;
+import devinc.dwitter.service.RoleService;
+import devinc.dwitter.service.SubscriptionService;
+import devinc.dwitter.service.TopicService;
+import devinc.dwitter.service.TweetService;
+import devinc.dwitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Random;
+import java.util.UUID;
 
 @Transactional
 @SpringBootTest

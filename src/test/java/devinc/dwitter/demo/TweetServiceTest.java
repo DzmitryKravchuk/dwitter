@@ -7,14 +7,21 @@ import devinc.dwitter.entity.User;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
-import devinc.dwitter.service.*;
+import devinc.dwitter.service.LikeService;
+import devinc.dwitter.service.RoleService;
+import devinc.dwitter.service.SubscriptionService;
+import devinc.dwitter.service.TopicService;
+import devinc.dwitter.service.TweetService;
+import devinc.dwitter.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TweetServiceTest extends AbstractCreationTest {
     @Autowired
@@ -40,8 +47,6 @@ public class TweetServiceTest extends AbstractCreationTest {
         final User userFromBase = userService.getById(user.getId());
         assertEquals(tweetService.getTweetListByUserId(userFromBase.getId()).size(), 1);
 
-        tweetService.delete(tweet.getId());
-        topicService.delete(topic.getId());
         userService.delete(user.getId());
     }
 

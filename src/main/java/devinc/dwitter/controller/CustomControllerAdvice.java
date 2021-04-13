@@ -1,6 +1,11 @@
 package devinc.dwitter.controller;
 
-import devinc.dwitter.exception.*;
+import devinc.dwitter.exception.NotExistingEMailException;
+import devinc.dwitter.exception.NotUniqueUserLoginException;
+import devinc.dwitter.exception.NotUniqueUserNameException;
+import devinc.dwitter.exception.ObjectNotFoundException;
+import devinc.dwitter.exception.OperationForbiddenException;
+import devinc.dwitter.exception.PasswordIncorrectException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

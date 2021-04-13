@@ -1,8 +1,6 @@
 package devinc.dwitter.service.impl;
 
 import devinc.dwitter.entity.Topic;
-import devinc.dwitter.entity.Tweet;
-import devinc.dwitter.entity.User;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.repository.TopicRepository;
 import devinc.dwitter.service.TopicService;
@@ -10,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;

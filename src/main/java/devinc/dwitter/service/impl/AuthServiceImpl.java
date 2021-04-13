@@ -7,7 +7,6 @@ import devinc.dwitter.security.CustomUserDetailsService;
 import devinc.dwitter.security.jvt.JwtFilter;
 import devinc.dwitter.security.jvt.JwtProvider;
 import devinc.dwitter.service.AuthService;
-import devinc.dwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
