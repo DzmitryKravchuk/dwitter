@@ -65,12 +65,12 @@ public class TweetServiceTest extends AbstractCreationTest {
         assertEquals(entityFromBase.getUserAccount().getId(), firstUser.getId());
         assertEquals(entityFromBase.getLikesCount(), 1);
         List<Like> likesList = likeService.getAllByTweetId(entityFromBase.getId());
-        assertEquals(likesList.get(0).getUser().getId(), secondUser.getId());
-
+        assertEquals(likesList.size(), 1);
         tweetService.likeTweet(dto, secondUser.getId());
         entityFromBase = tweetService.getById(tweet.getId());
+        List<Like> likes = likeService.getAllByTweetId(entityFromBase.getId());
         assertEquals(entityFromBase.getLikesCount(), 0);
-        assertEquals(entityFromBase.getLikesList().size(), 0);
+        assertEquals(likes.size(), 0);
     }
 
     @Test
@@ -83,9 +83,11 @@ public class TweetServiceTest extends AbstractCreationTest {
         Tweet entityFromBase2 = tweetService.getById(tweet2.getId());
         assertEquals(entityFromBase1.getId(), entityFromBase2.getRepostedTweet().getId());
         assertEquals(entityFromBase2.getContent(), "Hi, bro!!!");
+        assertEquals(tweetService.getAllReposts(entityFromBase1.getId()).size(), 1);
         tweetService.delete(tweet1.getId());
+        assertEquals(tweetService.getAllReposts(entityFromBase1.getId()).size(), 0);
         assertThrows(ObjectNotFoundException.class, () -> {
-            tweetService.getById(tweet2.getId());
+            tweetService.getById(tweet1.getId());
         });
     }
 

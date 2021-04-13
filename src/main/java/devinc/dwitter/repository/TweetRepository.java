@@ -21,4 +21,8 @@ public interface TweetRepository extends JpaRepository<Tweet, UUID> {
     @Modifying
     @Query(value ="delete from tweet where tweet.user_account_id=?1", nativeQuery = true)
     void deleteTweetsByUserId(UUID id);
+
+    @Modifying
+    @Query(value ="delete from tweet where tweet.reposted_tweet_id=?1", nativeQuery = true)
+    void deleteRepostsByTweetId(UUID tweetId);
 }

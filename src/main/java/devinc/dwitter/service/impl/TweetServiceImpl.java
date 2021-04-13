@@ -10,6 +10,7 @@ import devinc.dwitter.entity.dto.TweetDto;
 import devinc.dwitter.entity.dto.TweetLikeDto;
 import devinc.dwitter.exception.ObjectNotFoundException;
 import devinc.dwitter.exception.OperationForbiddenException;
+import devinc.dwitter.repository.LikeRepository;
 import devinc.dwitter.repository.TweetRepository;
 import devinc.dwitter.service.AuthService;
 import devinc.dwitter.service.LikeService;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @Setter
 public class TweetServiceImpl implements TweetService {
     private final TweetRepository repository;
+    private final LikeRepository likeRepository;
     private final UserService userService;
     private final TopicService topicService;
     private final LikeService likeService;
@@ -71,11 +73,8 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public void delete(UUID id) {
-        List<Tweet> reposts = getAllReposts(id);
-        reposts.forEach(repository::delete);
-        if (likeService.getAllByTweetId(id) != null) {
-            likeService.getAllByTweetId(id).forEach(l -> likeService.delete(l.getId()));
-        }
+        repository.deleteRepostsByTweetId(id);
+        likeRepository.deleteLikesByTweetId(id);
         repository.deleteById(id);
     }
 
@@ -119,46 +118,22 @@ public class TweetServiceImpl implements TweetService {
         if (tweet.getUserAccount().getId().equals(user.getId())) {
             throw new OperationForbiddenException("You can't put like on your own tweet");
         }
-        checkIfLikeListIsNull(tweet);
-        List<Like> likesList = likeService.getAllByTweetId(tweet.getId());
-        Like likeToDelete = getLikeToDeleteIfExists(userId, likesList);
+
+        Like likeToDelete = likeRepository.getLikeByTweetIdUserId(tweet.getId(), userId);
 
         if (likeToDelete != null) {
-            reduceLikesCount(tweet, likesList, likeToDelete);
+            likeRepository.deleteById(likeToDelete.getId());
+            tweet.setLikesCount(tweet.getLikesCount() - 1);
         } else {
-            increaseLikesCount(user, tweet, likesList);
+            increaseLikesCount(user, tweet);
         }
         save(tweet);
     }
 
-    private void increaseLikesCount(User user, Tweet tweet, List<Like> likesList) {
+    private void increaseLikesCount(User user, Tweet tweet) {
         Like like = new Like(user, tweet);
         likeService.save(like);
-        likesList.add(like);
         tweet.setLikesCount(tweet.getLikesCount() + 1);
-    }
-
-    private void reduceLikesCount(Tweet tweet, List<Like> likesList, Like likeToDelete) {
-        tweet.setLikesCount(tweet.getLikesCount() - 1);
-        likesList.remove(likeToDelete);
-        likeService.delete(likeToDelete.getId());
-    }
-
-    private Like getLikeToDeleteIfExists(UUID userId, List<Like> likesList) {
-        Like likeToDelete = null;
-        for (Like like : likesList) {
-            if (like.getUser().getId().equals(userId)) {
-                likeToDelete = like;
-            }
-        }
-        return likeToDelete;
-    }
-
-    private void checkIfLikeListIsNull(Tweet tweet) {
-        if (tweet.getLikesList() == null) {
-            List<Like> likesList = new ArrayList<>();
-            tweet.setLikesList(likesList);
-        }
     }
 
     @Override
